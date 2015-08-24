@@ -1,6 +1,3 @@
-require 'sinatra/base'
-require 'sinatra-websocket'
-
 class PlurryServer < Sinatra::Base
   set :server, 'thin'
   set :sockets, []
