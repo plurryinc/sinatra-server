@@ -1,4 +1,6 @@
 class PlurryServer < Sinatra::Base
+  register Sinatra::Warden
+
   set :server, 'thin'
   set :sockets, []
   set :rooms, {}

@@ -2,6 +2,7 @@
 require 'sinatra/base'
 require 'sinatra-websocket'
 require 'sinatra/activerecord'
+require 'warden'
 
 require './app'
 
