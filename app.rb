@@ -1,5 +1,9 @@
+require 'sinatra/base'
+require 'sinatra-websocket'
+require 'sinatra/activerecord'
+require 'warden'
+
 class PlurryServer < Sinatra::Base
-  register Sinatra::Warden
 
   set :server, 'thin'
   set :sockets, []
