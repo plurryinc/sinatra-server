@@ -1,11 +1,10 @@
-class PlurryServer < Sinatra::Base
+require 'sinatra-websocket'
 
-  set :server, 'thin'
+class WebsocketController < ApplicationController
   set :sockets, []
   set :rooms, {}
-  enable :sessions
 
-  get '/ws/:hash' do |hash|
+  get '/:hash' do |hash|
     if !request.websocket?
       erb :index
     else

@@ -1,10 +1,8 @@
 require 'sinatra/base'
-require 'sinatra-websocket'
 require 'sinatra/activerecord'
 
-ActiveRecord::Base.configurations = YAML.load_file('config/database.yml')
 Dir.glob('./{models,helpers,controllers}/*.rb').each { |file| require file }
+ActiveRecord::Base.configurations = YAML.load_file('config/database.yml')
 
-require './app'
-
-run PlurryServer
+map('/ws') { run WebsocketController }
+map('/') { run HomeController }
