@@ -49,8 +49,6 @@ GEM
     tilt (2.0.1)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    warden (1.2.3)
-      rack (>= 1.0)
 
 PLATFORMS
   ruby
@@ -61,4 +59,3 @@ DEPENDENCIES
   sinatra-activerecord
   sinatra-websocket
   sqlite3
-  warden
