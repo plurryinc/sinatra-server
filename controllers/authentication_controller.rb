@@ -3,7 +3,7 @@ class AuthenticationController < ApplicationController
     erb :sign_up
   end
 
-  post 'users' do
+  post '/' do
     User.sign_up params
   end
 
