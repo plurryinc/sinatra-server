@@ -6,7 +6,7 @@ class WebsocketController < ApplicationController
 
   get '/:hash' do |hash|
     if !request.websocket?
-      erb :index
+      erb :control
     else
       request.websocket do |ws|
         ws.onopen do
