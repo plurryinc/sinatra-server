@@ -30,6 +30,8 @@ class AuthenticationController < ApplicationController
     redirect "/users/sign_in"
   end
 
-  post '/logout' do
+  get '/sign_out' do
+    session[:user_id] = nil unless session[:user_id].nil?
+    redirect "/"
   end
 end
