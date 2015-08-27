@@ -10,7 +10,6 @@ class AuthenticationController < ApplicationController
       session[:user_id] = sign_up[:data].id
       redirect "/"
     else
-      flash[:error] = sign_up[:data]
       redirect "/users/sign_in"
     end
   end
@@ -29,7 +28,6 @@ class AuthenticationController < ApplicationController
       redirect "/"
     end
 
-    flash[:notice] = "login fail"
     redirect "/users/sign_in"
   end
 
