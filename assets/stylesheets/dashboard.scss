@@ -1,4 +1,11 @@
-@import "dashboard/bootstrap.css";
-@import "dashboard/bootstrap-theme.css";
-@import "dashboard/theme.css";
-@import "dashboard/morris.css";
+#credentials, #dialler, #messages {
+  clear: both;
+}
+#remote-video {
+  max-width: 100%;
+}
+#local-video {
+  position: relative;
+  left: 0;
+  max-width: 150px;
+}

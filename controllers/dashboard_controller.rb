@@ -1,12 +1,19 @@
-require 'sinatra-websocket'
-
-class WebsocketController < ApplicationController
+class DashboardController < ApplicationController
   set :sockets, []
   set :rooms, {}
 
+  before do
+    redirect "/" if session[:user_id].nil?
+    @user = User.find(session[:user_id])
+  end
+
+  get '' do
+    erb :dashboard, { :layout => :'layouts/dashboard' }
+  end
+
   get '/:hash' do |hash|
     if !request.websocket?
-      erb :ws
+      erb :ws, { :layout => :'layouts/dashboard' }
     else
       request.websocket do |ws|
         ws.onopen do

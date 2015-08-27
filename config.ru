@@ -9,6 +9,7 @@ Sass::Plugin.options[:style] = :compressed
 Sass::Plugin.options[:template_location] = './assets/stylesheets'
 use Sass::Plugin::Rack
 
-map('/ws') { run WebsocketController }
+map('/control') { run WebsocketController }
+map('/dashboard') { run DashboardController }
 map('/users') { run AuthenticationController }
 map('/') { run HomeController }
