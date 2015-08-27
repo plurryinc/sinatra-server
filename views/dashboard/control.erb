@@ -33,6 +33,9 @@
     <h1 class="page-header">
       Joystick <small>websocket</small>
     </h1>
+    <div class="joystick-limit">
+      <div id="joystick" class="joystick"></div>
+    </div>
   </div>
   <div class="col-lg-12">
     <h1 class="page-header">
@@ -48,28 +51,45 @@
 <!-- /.container-fluid -->
 
 <script type="text/javascript">
-  window.onload = function(){
-    (function(){
-      var show = function(el){
-        return function(msg){ el.innerHTML = msg + '<br />' + el.innerHTML; }
-      }(document.getElementById('msgs'));
+  $(document).ready(function() {
+    var show = function(el){
+      return function(msg){ el.innerHTML = msg + '<br />' + el.innerHTML; }
+    }(document.getElementById('msgs'));
 
-      var ws       = new WebSocket('ws://' + window.location.host + '/ws/<%=params[:name]%>');
-      ws.onopen    = function()  { show('websocket opened'); };
-      ws.onclose   = function()  { show('websocket closed'); }
-      ws.onmessage = function(m) { show(Date() + ': ' +  m.data); };
+    var ws       = new WebSocket('ws://' + window.location.host + '/ws/<%=params[:name]%>');
+    ws.onopen    = function()  { show('websocket opened'); };
+    ws.onclose   = function()  { show('websocket closed'); }
+    ws.onmessage = function(m) { show(Date() + ': ' +  m.data); };
 
-      var sender = function(f){
-        var input     = document.getElementById('input');
-        input.onclick = function(){ input.value = "" };
-        f.onsubmit    = function(){
-          ws.send(input.value);
-          input.value = "";
-          return false;
-        }
-      }(document.getElementById('form'));
-    })();
-  }
+    var sender = function(f){
+      var input     = document.getElementById('input');
+      input.onclick = function(){ input.value = "" };
+      f.onsubmit    = function(){
+        ws.send(input.value);
+        input.value = "";
+        return false;
+      }
+    }(document.getElementById('form'));
+
+    var vec = Object.seal({
+      x: 0,
+      y: 0,
+      origin_x: 0,
+      origin_y: 0,
+    });
+
+    makeJoystick('#joystick', 80, function(magnitude, theta, ximpulse, yimpulse) {
+      vec.origin_x = ximpulse;
+      vec.origin_y = yimpulse;
+      vec.x = 10 * (ximpulse / 80);
+      vec.y = 10 * (yimpulse / 80);
+    });
+    joystickSender = setInterval(function() {
+      if(vec.origin_x != 0 && vec.origin_y != 0) {
+        ws.send({ x: vec.origin_x, y: vec.origin_y });
+      }
+    }, 1000 / 2);
+});
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
