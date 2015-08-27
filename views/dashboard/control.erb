@@ -2,6 +2,34 @@
 <!-- Page Heading -->
 <!-- row -->
 <div class="row">
+  <div class="col-lg-12">
+    <% @group.products.each_with_index do |p, i| %>
+    <div class="col-lg-6">
+      <h3 class="page-header">
+        Debugger(<%=i%>) <small><%=p.product_id%></small>
+      </h3>
+      <input type="text" id="input_<%=p.id%>" placeholder="send a test command">
+      <div id="msgs_<%=p.id%>" style="height:200px;overflow:scroll;"></div>
+      <script type="text/javascript">
+        $(document).ready(function(){
+          function show_<%=p.id%>(msg) {
+            $("#msgs_<%=p.id%>").prepend(msg+'<br>');
+          }
+          var ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/<%=p.product_id%>');
+          ws_<%=p.id%>.onopen    = function()  { show_<%=p.id%>('websocket opened'); };
+          ws_<%=p.id%>.onclose   = function()  { show_<%=p.id%>('websocket closed'); }
+          ws_<%=p.id%>.onmessage = function(m) { show_<%=p.id%>(Date() + ': ' +  m.data); };
+          $("#input_<%=p.id%>").keypress(function(e) {
+            if (e.which == 13) {
+              ws_<%=p.id%>.send($(this).val());
+              $(this).val("");
+            }
+          });
+        });
+      </script>
+    </div>
+    <% end %>
+  </div>
   <div class="col-lg-6">
     <h1 class="page-header">
       Video Calling <small>Lovely My Pet</small>
@@ -36,34 +64,6 @@
     <div class="joystick-limit">
       <div id="joystick" class="joystick" data-code="<%= current_user.groups.first.products.first.product_id %>" ></div>
     </div>
-  </div>
-  <div class="col-lg-12">
-    <% @group.products.each_with_index do |p, i| %>
-    <div class="col-lg-6">
-      <h1 class="page-header">
-        Debugger(<%=i%>) <small><%=p.product_id%></small>
-      </h1>
-      <input type="text" id="input_<%=p.id%>" placeholder="send a test command">
-      <div id="msgs_<%=p.id%>" style="height:300px;overflow:scroll;"></div>
-      <script type="text/javascript">
-        $(document).ready(function(){
-          function show_<%=p.id%>(msg) {
-            $("#msgs_<%=p.id%>").prepend(msg+'<br>');
-          }
-          var ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/<%=p.product_id%>');
-          ws_<%=p.id%>.onopen    = function()  { show_<%=p.id%>('websocket opened'); };
-          ws_<%=p.id%>.onclose   = function()  { show_<%=p.id%>('websocket closed'); }
-          ws_<%=p.id%>.onmessage = function(m) { show_<%=p.id%>(Date() + ': ' +  m.data); };
-          $("#input_<%=p.id%>").keypress(function(e) {
-            if (e.which == 13) {
-              ws_<%=p.id%>.send($(this).val());
-              $(this).val("");
-            }
-          });
-        });
-      </script>
-    </div>
-    <% end %>
   </div>
 </div>
 <!-- /.row -->
