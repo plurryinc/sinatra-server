@@ -10,8 +10,8 @@
   <title>Plurry Dashboard</title>
   <script src="/javascripts/jquery/jquery-2.1.4.min.js"></script>
   <script src="/javascripts/bootstrap/bootstrap.min.js"></script>
-  <script src="/javascripts/dashboard/main.js"></script>
   <script src="/javascripts/dashboard/peer.js"></script>
+  <script src="/javascripts/dashboard/main.js"></script>
   <link href="/stylesheets/bootstrap/bootstrap-theme.min.css" rel="stylesheet">
   <link href="/stylesheets/bootstrap/bootstrap.min.css" rel="stylesheet">
   <link href="/stylesheets/dashboard/morris.css" rel="stylesheet">
@@ -193,18 +193,21 @@
   </div>
   <!-- /.navbar-collapse -->
 </nav>
-  <div id="page-wrapper">
+<div id="page-wrapper">
+
   <%= yield %>
+
   </div>
   <!-- /#page-wrapper -->
 </div>
 <!-- /#wrapper -->
 
 
-<!-- Morris Charts JavaScript -->
+<!-- Morris Charts JavaScript
 <script src="javascripts/morris/raphael.min.js"></script>
 <script src="javascripts/morris/morris.min.js"></script>
 <script src="javascripts/morris/morris-data.js"></script>
+-->
 
 </body>
 </html>
