@@ -54,7 +54,7 @@
         return function(msg){ el.innerHTML = msg + '<br />' + el.innerHTML; }
       }(document.getElementById('msgs'));
 
-      var ws       = new WebSocket('ws://' + window.location.host + '/ws/<%=params[:id]%>');
+      var ws       = new WebSocket('ws://' + window.location.host + '/ws/<%=params[:name]%>');
       ws.onopen    = function()  { show('websocket opened'); };
       ws.onclose   = function()  { show('websocket closed'); }
       ws.onmessage = function(m) { show(Date() + ': ' +  m.data); };

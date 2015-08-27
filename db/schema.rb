@@ -13,10 +13,35 @@
 
 ActiveRecord::Schema.define(version: 20150824141615) do
 
+  create_table "groups", force: :cascade do |t|
+    t.integer  "user_id",    null: false
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "groups", ["name"], name: "index_groups_on_name", unique: true
+
+  create_table "products", force: :cascade do |t|
+    t.integer  "group_id"
+    t.string   "code",         null: false
+    t.string   "product_id",   null: false
+    t.string   "secret_token", null: false
+    t.integer  "product_type", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "products", ["code"], name: "index_products_on_code", unique: true
+  add_index "products", ["product_id"], name: "index_products_on_product_id", unique: true
+
   create_table "users", force: :cascade do |t|
-    t.string "email",              null: false
-    t.string "encrypted_password", null: false
-    t.string "salt"
+    t.string   "email",              null: false
+    t.string   "encrypted_password", null: false
+    t.string   "salt"
+    t.text     "options"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
   end
 
 end
