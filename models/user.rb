@@ -15,6 +15,8 @@ class User < ActiveRecord::Base
 
       user = User.create(email: email, encrypted_password: password_hash, salt: password_salt)
       return { result: "success", data: user }
+    else
+      return { result: "fail", data: "패스워드가 다릅니다." }
     end
   end
 end
