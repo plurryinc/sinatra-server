@@ -146,15 +146,22 @@
   <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
   <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav side-nav">
-      <li class="active">
+      <li <%="class='active'" if request.path_info == ""%>>
         <a href="/dashboard"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
       </li>
-      <li>
-        <a href="/dashboard/control/firstbot"><i class="fa fa-fw fa-desktop"></i> firstbot</a>
+      <% if current_user.groups.empty? %>
+      <li <%="class='active'" if request.path_info == "/dashboard/new"%>>
+        <a href="/dashboard/new"><i class="fa fa-fw fa-plus"></i> 새로운 제품등록</a>
       </li>
-      <li>
-        <a href="/dashboard/control/secondbot"><i class="fa fa-fw fa-desktop"></i> secondbot</a>
+      <% end %>
+      <% current_user.groups.each do |g| %>
+        <li <%="class='active'" if request.path_info == "/control/#{g.name}"%>>
+        <a href="/dashboard/control/<%=g.name%>"><i class="fa fa-fw fa-desktop"></i> <%=g.name%></a>
       </li>
+      <li <%="class='active'" if request.path_info == "/dashboard/new"%>>
+        <a href="/dashboard/new"><i class="fa fa-fw fa-plus"></i> 새로운 제품등록</a>
+      </li>
+      <% end %>
       <!--
       <li>
         <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>
