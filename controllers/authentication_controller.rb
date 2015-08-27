@@ -10,6 +10,7 @@ class AuthenticationController < ApplicationController
       session[:user_id] = sign_up[:data].id
       redirect "/"
     else
+      flash[:error] = sign_up[:data]
       redirect "/users/sign_in"
     end
   end
