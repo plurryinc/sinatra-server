@@ -24,10 +24,12 @@ class AuthenticationController < ApplicationController
     email = params[:email]
     user = User.where(email: params[:email]).take
 
-    if user.encrypted_password == BCrypt::Engine.hash_secret(params[:password], user.salt)
+    if !user.nil? and user.encrypted_password == BCrypt::Engine.hash_secret(params[:password], user.salt)
       session[:user_id] = user.id
       redirect "/"
     end
+
+    flash[:notice] = "login fail"
     redirect "/users/sign_in"
   end
 
