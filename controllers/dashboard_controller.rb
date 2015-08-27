@@ -13,7 +13,7 @@ class DashboardController < ApplicationController
 
   get '/:hash' do |hash|
     if !request.websocket?
-      erb :ws, { :layout => :'layouts/dashboard' }
+      erb :ws
     else
       request.websocket do |ws|
         ws.onopen do
