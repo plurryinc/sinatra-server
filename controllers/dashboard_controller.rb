@@ -7,7 +7,7 @@ class DashboardController < ApplicationController
     erb :'dashboard/index', { :layout => :'layouts/dashboard' }
   end
 
-  get '/control/:id' do
+  get '/control/:name' do
     erb :'dashboard/control', { :layout => :'layouts/dashboard' }
   end
 end
