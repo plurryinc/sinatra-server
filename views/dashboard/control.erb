@@ -11,12 +11,12 @@
       <!--
       <button id="connect">Connect</button>
       -->
-      <a href="#" id="client_btn" class="ui-btn ui-btn-inline">연결하기</a>
+      <button id="client_btn" class="ui-btn ui-btn-inline">연결하기</button>
+      <button id="dial" class="ui-btn ui-btn-inline" style="display:none;">Station에 접속하기</button>
     </div>
 
     <div id="dialler" data-active="false">
       <input type="hidden" id="recipient-id" value="station">
-      <button id="dial" style="display:none;">Station에 접속하기</button>
       <div class="remote">
         <h1>상대 영상</h1>
         <video id="remote-video" autoplay></video>
@@ -36,7 +36,7 @@
   </div>
   <div class="col-lg-12">
     <h1 class="page-header">
-      Debugger(1) <small>Product_id_1</small>
+      Debugger(1) <small><%=current_user.groups.first.products.first.product_id%></small>
     </h1>
     <form id="form">
       <input type="text" id="input" placeholder="send a test command"></input>

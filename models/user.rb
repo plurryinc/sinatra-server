@@ -1,6 +1,7 @@
 require 'bcrypt'
 
 class User < ActiveRecord::Base
+  has_many :groups
 
   def self.sign_up params
     email = params[:email]
