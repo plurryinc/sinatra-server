@@ -1,8 +1,32 @@
-var makeJoystick = function(selector, sqhw, done) {
-  if (typeof(done) !== 'function') {
-    done = function(){};
-  }
+var makeJoystick = function(selector, sqhw) {
+  //websocket tire controller
+  var show = function(el){
+    return function(msg){ el.innerHTML = msg + '<br />' + el.innerHTML; }
+  }(document.getElementById('msgs'));
 
+  var product_code     = $(selector).data('code');
+  var ws       = new WebSocket('ws://' + window.location.host + '/ws/' + product_code);
+  ws.onopen    = function()  { show('websocket opened'); };
+  ws.onclose   = function()  { show('websocket closed'); }
+  ws.onmessage = function(m) { show(Date() + ': ' +  m.data); };
+
+  var sender = function(f){
+    var input     = document.getElementById('input');
+    input.onclick = function(){ input.value = "" };
+    f.onsubmit    = function(){
+      ws.send(input.value);
+      input.value = "";
+      return false;
+    }
+  }(document.getElementById('form'));
+
+  var vec = Object.seal({
+    left: 0,
+    right: 0
+  });
+
+  var websocketInterval = null;
+  var websocketDelay = 1000 / 10;
   var container = $(selector);
   var stick = $('<div class="joystick-base"></div>');
   var circle = $('<div class="joystick-point"></div>');
@@ -21,9 +45,15 @@ var makeJoystick = function(selector, sqhw, done) {
   container.append(stick);
 
   stick.draggable({
-    start: null,
+    start: function() {
+      clearInterval(websocketInterval);
+      websocketInterval = setInterval(function() {
+        ws.send("left : " + vec.left + " right : " + vec.right)
+      }, websocketDelay);
+    },
     containment: "parent",
-    drag: function() {
+    drag: function(event, ui) {
+      $(this).stop();
       var x = parseInt(this.style.left.substr(0, this.style.left.length - 2), 10) + sqhw / 4;
       var y = parseInt(this.style.top.substr(0, this.style.top.length - 2), 10) + sqhw / 4;
 
@@ -45,35 +75,53 @@ var makeJoystick = function(selector, sqhw, done) {
 
       y *= -1;
 
-      console.log(x, y);
+      vec.left = y + x;
+      vec.right = y - x;
 
-      var theta = (Math.atan(y / x) || 0) * (180 / Math.PI);
-
-      if (x === 0 && y === 0) {
-        return done(0, 0, 0, 0);
-      }
-
-      if (x > 0) {
-        if (y <= 0) {
-          theta += 360;
-        }
-      } else if (x < 0) {
-        theta += 180;
-      }
-
-      var magnitude = Math.sqrt((Math.pow(x, 2) + Math.pow(y, 2)));
-
-      if (magnitude > sqhw / 2) {
-        magnitude = sqhw / 2;
-      }
-
-      done(magnitude, theta, x, y);
     },
     stop: function() {
-      this.style.top = 'calc( 50% - ' + ((sqhw / 4) + 1) + 'px )';
-      this.style.left = 'calc( 50% - ' + ((sqhw / 4) + 1) + 'px )';
+      var self = this;
+      var top = ($(this).parent().height() / 2) - (sqhw / 4) + 1;
+      var left = ($(this).parent().width() / 2) - (sqhw / 4) + 1;
 
-      done(0, 0, 0, 0);
+      $(this).stop().animate({
+        top: top,
+        left: left
+      }, 1000, function() {
+        this.style.top = 'calc( 50% - ' + ((sqhw / 4) + 1) + 'px )';
+        this.style.left = 'calc( 50% - ' + ((sqhw / 4) + 1) + 'px )';
+        clearInterval(returnInterval);
+        clearInterval(websocketInterval);
+        vec.left = 0;
+        vec.right = 0;
+        ws.send("left : " + vec.left + " right : " + vec.right);
+      });
+
+      var returnInterval = setInterval(function() {
+        var x = parseInt(self.style.left.substr(0, self.style.left.length - 2), 10) + sqhw / 4;
+        var y = parseInt(self.style.top.substr(0, self.style.top.length - 2), 10) + sqhw / 4;
+
+        if (x > sqhw / 2) {
+          x -= sqhw / 2;
+        } else if (x < sqhw / 2) {
+          x = - (sqhw / 2 - x);
+        } else {
+          x = 0;
+        }
+
+        if (y > sqhw / 2) {
+          y -= sqhw / 2;
+        } else if (y < sqhw / 2) {
+          y = - (sqhw / 2 - y);
+        } else {
+          y = 0;
+        }
+
+        y *= -1;
+
+        vec.left = y + x;
+        vec.right = y - x;
+      }, websocketDelay);
     }
   });
 };
