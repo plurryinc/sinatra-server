@@ -43,7 +43,7 @@
   margin-bottom: 25px;
 }
 
-.feed-button {
+.feed-button, .schedule-button {
   width: 150px;
   line-height: 50px;
   margin: 20px auto;
@@ -56,5 +56,9 @@
   &:hover {
     background-color: #34A4E8;
   }
+}
+
+.schedule-form {
+  border-bottom: 5px solid #ccc;
 }
 

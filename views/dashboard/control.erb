@@ -82,14 +82,22 @@
     <h1 class="page-header">
       Schedule <small>For My Pet</small>
     </h1>
-    <h3>스케쥴 설정</h3>
-    <div id="schedule-feed-slider"></div>
-    <div class="steps">
-      <span style="display:inline-block;width: 3%;text-align:left;margin-right: 13%;">|<br>적게</span>
-      <span style="display:inline-block;width: 7%;text-align:right;">|<br>많이</span>
-    </div>
-    <div class="schdule-form">
-      <input type="time">
+    <div class="schedule-form">
+      <p>
+        <label for="schedule-amount">밥 줄 정도 :</label>
+        <input type="text" id="schedule-amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+      </p>
+      <div id="schedule-feed-slider"></div>
+      <p>
+        <label style="margin-top: 25px;" >밥 줄 시간 :</label>
+        <input type="text" id="schedule-time" readonly style="border:0; color:#f6931f; font-weight:bold;">
+        <p>※ 기본 간격은 15 분 단위이며, 직접 입력 시에는 입력 후 포커스를 해제 해주세요.</p>
+      </p>
+      <div class="input-group bootstrap-timepicker timepicker">
+        <input id="schedule-timepicker" type="text" class="form-control input-small">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+      </div>
+      <div class="schedule-button">스케쥴 추가하기</div>
     </div>
   </div>
 
@@ -163,9 +171,26 @@
       max: 9,
       value: 1,
       slide: function( event, ui ) {
-        $("#amount").val(ui.value);
+        $("#schedule-amount").val(ui.value);
       }
     });
+    $("#schedule-amount").val($("#schedule-feed-slider").slider("value"));
+    //스케쥴 시간 선택
+    var $timepicker = $('#schedule-timepicker').timepicker();
+    function timepickerConverter($el) {
+      if(!$el) $el = $timepicker;
+      var hours = $el.data('timepicker').hour;
+      var minutes = $el.data('timepicker').minute;
+      var meridian = $el.data('timepicker').meridian;
+      if( meridian == "PM" ) hours += 12;
+
+      var totalSecond = (3600 * hours) + (minutes * 60);
+      return totalSecond
+    }
+    $('#schedule-timepicker').change(function() {
+      $("#schedule-time").val(timepickerConverter());
+    });
+    $("#schedule-time").val(timepickerConverter());
   });
 
 document.addEventListener('DOMContentLoaded', function () {
