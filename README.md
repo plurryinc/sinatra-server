@@ -31,3 +31,10 @@ $ RACK_ENV={development|production} racksh
 ```
 $ cap staging deploy
 ```
+
+## SSH key setting
+
+```
+eval 'ssh-agent'
+ssh-add ~/.ssh/id_rsa
+```
