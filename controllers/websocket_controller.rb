@@ -11,7 +11,7 @@ class WebsocketController < ApplicationController
     else
       request.websocket do |ws|
         ws.onopen do
-          ws.send("Hello World! Channel : #{hash}")
+          ws.send("CMD! Channel : #{hash}")
           settings.sockets << ws
           settings.rooms[hash] = Array.new if settings.rooms[hash].class != Array
           settings.rooms[hash] << ws.object_id
@@ -22,14 +22,18 @@ class WebsocketController < ApplicationController
           EM.next_tick do
             settings.sockets.each do |s|
               if settings.rooms[hash].include? (s.object_id)
-                if is_valid_json? msg
-                  unless msg[:cmd].nil?
-                    s.send(msg)
-                  else
-                    # 서버 내부 처리 rs / report
-                  end
+                if is_valid_cmd? msg
+                  s.send(msg)
                 else
-                  # 무시 (로깅만)
+                  unless settings.rooms["debug_" + hash].nil?
+                    settings.rooms["debug_" + hash].each do |d|
+                      settings.sockets.each do |s|
+                        if s.object_id == d
+                          s.send msg
+                        end
+                      end
+                    end
+                  end
                 end
               end
             end
@@ -37,6 +41,7 @@ class WebsocketController < ApplicationController
         end
         ws.onclose do
           warn("websocket closed")
+          settings.rooms.delete(hash)
           settings.sockets.delete(ws)
         end
       end
@@ -51,30 +56,23 @@ class WebsocketController < ApplicationController
         ws.onopen do
           ws.send("Debug! Channel : #{hash}")
           settings.sockets << ws
-          settings.rooms[hash] = Array.new if settings.rooms[hash].class != Array
-          settings.rooms[hash] << ws.object_id
+          settings.rooms["debug_" + hash] = Array.new if settings.rooms["debug_" + hash].class != Array
+          settings.rooms["debug_" + hash] << ws.object_id
           ws.send("object_id : " + ws.object_id.to_s)
-          session[:ws_id] = ws.object_id
+          session[:debug_ws_id] = ws.object_id
         end
         ws.onmessage do |msg|
           EM.next_tick do
             settings.sockets.each do |s|
-              if settings.rooms[hash].include? (s.object_id)
-                if is_valid_json? msg
-                  unless msg[:cmd].nil?
-                    s.send(msg)
-                  else
-                    # 서버 내부 처리 rs / report
-                  end
-                else
-                  # 무시 (로깅만)
-                end
+              if settings.rooms["debug_" + hash].include? (s.object_id)
+                s.send(msg)
               end
             end
           end
         end
         ws.onclose do
           warn("websocket closed")
+          settings.rooms.delete("debug_" + hash)
           settings.sockets.delete(ws)
         end
       end
@@ -82,6 +80,15 @@ class WebsocketController < ApplicationController
   end
 
   private
+
+  def is_valid_cmd? string
+    begin
+      JSON.parse string
+      return !string["cmd"].nil?
+    rescue Exception => e
+      return false
+    end
+  end
 
   def is_valid_json? string
     begin
