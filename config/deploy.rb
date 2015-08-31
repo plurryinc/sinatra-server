@@ -59,7 +59,6 @@ namespace :deploy do
       end
     end
   end
-
   task :restart do
     on roles(:app), in: :groups, limit: 3, wait: 10 do
       within release_path do
@@ -67,7 +66,6 @@ namespace :deploy do
       end
     end
   end
-
   task :db_migrate do
     on roles(:app), in: :groups, limit: 3, wait: 10 do
       within release_path do
@@ -100,28 +98,7 @@ namespace :deploy do
       end
     end
   end
-
-
-  task :restart do
-    on roles(:app), in: :groups, limit: 3, wait: 10 do
-      within release_path do
-        execute :kill, '`lsof -t -i:3000`'
-        execute :bundle, 'exec thin start -e production -d'
-      end
-    end
-  end
-
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      within release_path do
-        #execute :rake, 'cache:clear'
-        execute 'kill `lsof -t -i:3000`'
-        execute 'thin start -e production -d'
-      end
-    end
-  end
 end
 
 after "deploy", "deploy:db_setup"
-after "deploy:db_setup", "deploy:restart"
+after "deploy:db_setup", "deploy:start"
