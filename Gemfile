@@ -8,3 +8,4 @@ gem "sqlite3"
 gem "rake"
 gem "bcrypt"
 gem "sass"
+gem 'capistrano', '~> 3.4.0'
