@@ -10,10 +10,14 @@ var makeJoystick = function(selector, sqhw) {
   });
 
   var websocketInterval = null;
-  var websocketDelay = 1000 / 10;
+  var websocketDelay = 200;
   var container = $(selector);
   var stick = $('<div class="joystick-base"></div>');
   var circle = $('<div class="joystick-point"></div>');
+
+  this.setWebSocketDelay = function(delay) {
+    websocketDelay = delay;
+  };
 
   container.css('width', sqhw + 'px');
   container.css('height', sqhw + 'px');
