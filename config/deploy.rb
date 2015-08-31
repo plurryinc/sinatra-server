@@ -2,13 +2,15 @@
 lock '3.4.0'
 
 set :application, 'sinatra-server'
-set :repo_url, 'git@github.com:me/plurryinc/sinatra-server.git'
+set :repo_url, 'git@github.com:plurryinc/sinatra-server.git'
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, '/home/ec2-user/sinatra-server'
+
+set :ssh_options, {:forward_agent => true}
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -20,7 +22,7 @@ set :deploy_to, '/home/ec2-user/sinatra-server'
 # set :log_level, :debug
 
 # Default value for :pty is false
-# set :pty, true
+#set :pty, true
 
 # Default value for :linked_files is []
 set :linked_files, fetch(:linked_files, []).push('config/database.yml')
@@ -35,16 +37,24 @@ set :linked_files, fetch(:linked_files, []).push('config/database.yml')
 # set :keep_releases, 5
 
 namespace :deploy do
+  task :start do
+    on roles(:web), in: :groups, limit: 3, wait: 10 do
+      within release_path do
+        execute 'thin start -e production -d'
+      end
+    end
+  end
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
       # Here we can do anything such as:
       within release_path do
         #execute :rake, 'cache:clear'
-        execute 'kill -9 $(cat tmp/pids/thin.pid)'
-        execute 'thin start -e production -d
+        execute 'kill `lsof -t -i:3000`'
+        execute 'thin start -e production -d'
       end
     end
   end
-
 end
+
+after "deploy", "deploy:start"

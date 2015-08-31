@@ -9,3 +9,6 @@ gem "rake"
 gem "bcrypt"
 gem "sass"
 gem 'capistrano', '~> 3.4.0'
+gem "capistrano-bundler"
+gem "capistrano-rvm"
+gem "thin"
