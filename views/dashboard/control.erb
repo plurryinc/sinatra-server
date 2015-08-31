@@ -82,14 +82,21 @@
     <h1 class="page-header">
       Schedule <small>For My Pet</small>
     </h1>
-    <h3>스케쥴 설정</h3>
-    <div id="schedule-feed-slider"></div>
-    <div class="steps">
-      <span style="display:inline-block;width: 3%;text-align:left;margin-right: 13%;">|<br>적게</span>
-      <span style="display:inline-block;width: 7%;text-align:right;">|<br>많이</span>
-    </div>
     <div class="schdule-form">
-      <input type="time">
+      <p>
+        <label for="schedule-amount">밥 줄 정도 :</label>
+        <input type="text" id="schedule-amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+      </p>
+      <div id="schedule-feed-slider"></div>
+      <label style="margin-top: 25px;" >밥 줄 시간</label>
+      <div class="input-group bootstrap-timepicker timepicker">
+        <input id="timepicker1" type="text" class="form-control input-small">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+      </div>
+ 
+        <script type="text/javascript">
+            $('#timepicker1').timepicker();
+        </script>
     </div>
   </div>
 
@@ -163,8 +170,12 @@
       max: 9,
       value: 1,
       slide: function( event, ui ) {
-        $("#amount").val(ui.value);
+        $("#schedule-amount").val(ui.value);
       }
+    });
+    $("#schedule-amount").val($("#schedule-feed-slider").slider("value"));
+    //스케쥴 시간 선택
+    $("#schedule-time").blur(function(event) {
     });
   });
 
