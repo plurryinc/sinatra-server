@@ -2,7 +2,6 @@ var makeJoystick = function(selector, sqhw) {
   //websocket tire controller
 
   var product_code     = $(selector).data('code');
-  var ws       = new WebSocket('ws://' + window.location.host + '/ws/' + product_code);
 
   var vec = Object.seal({
     left: 0,
@@ -36,8 +35,8 @@ var makeJoystick = function(selector, sqhw) {
     start: function() {
       clearInterval(websocketInterval);
       websocketInterval = setInterval(function() {
-        ws.send('{"cmd" : 8, "speed" : ' + vec.left + '}');
-        ws.send('{"cmd" : 9, "speed" : ' + vec.right + '}');
+        ws_2.send('{"cmd" : 8, "speed" : ' + vec.left + '}');
+        ws_2.send('{"cmd" : 9, "speed" : ' + vec.right + '}');
       }, websocketDelay);
     },
     containment: "parent",
@@ -83,8 +82,8 @@ var makeJoystick = function(selector, sqhw) {
         clearInterval(websocketInterval);
         vec.left = 0;
         vec.right = 0;
-        ws.send('{"cmd" : 8, "speed" : ' + vec.left + '}');
-        ws.send('{"cmd" : 9, "speed" : ' + vec.right + '}');
+        ws_2.send('{"cmd" : 8, "speed" : ' + vec.left + '}');
+        ws_2.send('{"cmd" : 9, "speed" : ' + vec.right + '}');
       });
 
       var returnInterval = setInterval(function() {

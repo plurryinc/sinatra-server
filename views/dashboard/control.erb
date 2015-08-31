@@ -15,7 +15,7 @@
           function show_<%=p.id%>(msg) {
             $("#msgs_<%=p.id%>").prepend(msg+'<br>');
           }
-          var ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/<%=p.product_id%>');
+          ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/<%=p.product_id%>');
           ws_<%=p.id%>.onopen    = function()  { show_<%=p.id%>('websocket opened'); };
           ws_<%=p.id%>.onclose   = function()  { show_<%=p.id%>('websocket closed'); }
           ws_<%=p.id%>.onmessage = function(m) { show_<%=p.id%>(Date() + ': ' +  m.data); };
@@ -30,7 +30,33 @@
     </div>
     <% end %>
   </div>
+
   <div class="col-lg-6">
+    <h1 class="page-header">
+      Feed <small>My Hungry Pet</small>
+    </h1>
+    <p>
+      <label for="amount">밥 줄 정도 :</label>
+      <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+    </p>
+    <h3>밥 줄 정도를 정해주세요.</h3>
+    <div id="feed-slider"></div>
+    <div class="feed-button">밥주기</div>
+  </div>
+j
+  <div class="col-lg-6">
+    <h1 class="page-header">
+      Joystick <small>websocket</small>
+    </h1>
+    <h3>딜레이를 입력 후에 엔터를 눌러주세요(기본 값은 200(0.2s)</h3>
+    <input type="number" max="2000" min="200" id="joystick-delay" value="200">
+    <div class="joystick-delay-message"></div>
+    <div class="joystick-limit">
+      <div id="joystick" class="joystick" data-code="<%= current_user.groups.first.products.first.product_id %>" ></div>
+    </div>
+  </div>
+
+  <div class="col-lg-12">
     <h1 class="page-header">
       Video Calling <small>Lovely My Pet</small>
     </h1>
@@ -57,17 +83,7 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-6">
-    <h1 class="page-header">
-      Joystick <small>websocket</small>
-    </h1>
-    <h3>딜레이를 입력 후에 엔터를 눌러주세요(기본 값은 200(0.2s)</h3>
-    <input type="number" max="2000" min="200" id="joystick-delay" value="200">
-    <div class="joystick-delay-message"></div>
-    <div class="joystick-limit">
-      <div id="joystick" class="joystick" data-code="<%= current_user.groups.first.products.first.product_id %>" ></div>
-    </div>
-  </div>
+  
 </div>
 <!-- /.row -->
 <!-- /.container-fluid -->
@@ -87,6 +103,21 @@
         value = min;
       $('.joystick-delay-message').text(parseFloat((value / 1000)).toFixed(3) + " 초 딜레이로 변경 되었습니다.")
       joystick.setWebSocketDelay(value);
+    });
+    //밥주기 슬라이더
+    $("#feed-slider").slider({
+      range: "max",
+      min: 1,
+      max: 9,
+      value: 1,
+      slide: function( event, ui ) {
+        $("#amount").val(ui.value);
+      }
+    });
+    $("#amount").val($("#feed-slider").slider("value"));
+    //밥주기 이벤트
+    $(".feed-button").click(function() {
+      ws_1.send('{"cmd" : 6, "amount" : ' + $("#feed-slider").slider("value") + '}');
     });
   });
 
