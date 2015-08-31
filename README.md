@@ -25,3 +25,9 @@ $ thin start -e production (-d for daemon mode)
 $ gem install racksh
 $ RACK_ENV={development|production} racksh
 ```
+
+## Deploy
+
+```
+$ cap staging deploy
+```

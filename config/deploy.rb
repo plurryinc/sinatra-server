@@ -4,6 +4,10 @@ lock '3.4.0'
 set :application, 'sinatra-server'
 set :repo_url, 'git@github.com:plurryinc/sinatra-server.git'
 
+set :rvm_type, :user
+set :rvm_ruby_version, '2.2.1'
+set :rvm_roles, [:app, :web]
+
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
@@ -31,25 +35,62 @@ set :linked_files, fetch(:linked_files, []).push('config/database.yml')
 # set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
 
 # Default value for default_env is {}
-set :default_env, { path: "$PATH" }
+set :default_env, { PATH: "/home/ec2-user/.rvm/gems/ruby-2.2.1/bin:/home/ec2-user/.rvm/rubies/ruby-2.2.1/bin:$PATH",
+                    GEM_PATH: "/home/ec2-user/.rvm/gems/ruby-2.2.1",
+                    GEM_HOME: "/home/ec2-user/.rvm/gems/ruby-2.2.1",
+                    BUNDLE_PATH: "/home/ec2-user/.rvm/gems/ruby-2.2.1"}
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
 namespace :deploy do
   task :start do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
+    on roles(:app), in: :groups, limit: 3, wait: 10 do
       within release_path do
-        execute 'bundle exec thin start -e production -d'
+        execute :bundle, 'exec thin start -e production -d'
       end
     end
   end
 
-  task :restart do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
+  task :db_migrate do
+    on roles(:app), in: :groups, limit: 3, wait: 10 do
       within release_path do
-        execute 'kill `lsof -t -i:3000`'
-        execute 'bundle exec thin start -e production -d'
+        execute :rake, 'db:migrate RACK_ENV=production'
+      end
+    end
+  end
+
+  task :db_seed do
+    on roles(:app), in: :groups, limit: 3, wait: 10 do
+      within release_path do
+        execute :rake, 'db:seed RACK_ENV=production'
+      end
+    end
+  end
+
+  task :db_setup do
+    on roles(:app), in: :groups, limit: 3, wait: 10 do
+      within release_path do
+        execute :rake, 'db:migrate RACK_ENV=production'
+        execute :rake, 'db:seed RACK_ENV=production'
+      end
+    end
+  end
+
+  task :db_drop do
+    on roles(:app), in: :groups, limit: 3, wait: 10 do
+      within release_path do
+        execute :rake, 'db:drop RACK_ENV=production'
+      end
+    end
+  end
+
+
+  task :restart do
+    on roles(:app), in: :groups, limit: 3, wait: 10 do
+      within release_path do
+        execute :kill, '`lsof -t -i:3000`'
+        execute :bundle, 'exec thin start -e production -d'
       end
     end
   end
@@ -66,4 +107,5 @@ namespace :deploy do
   end
 end
 
-after "deploy", "deploy:start"
+after "deploy", "deploy:db_setup"
+after "deploy:db_setup", "deploy:start"
