@@ -78,8 +78,22 @@
       <div id="joystick" class="joystick" data-code="<%= current_user.groups.first.products.first.product_id %>" ></div>
     </div>
   </div>
+  <div class="col-lg-6">
+    <h1 class="page-header">
+      Schedule <small>For My Pet</small>
+    </h1>
+    <h3>스케쥴 설정</h3>
+    <div id="schedule-feed-slider"></div>
+    <div class="steps">
+      <span style="display:inline-block;width: 3%;text-align:left;margin-right: 13%;">|<br>적게</span>
+      <span style="display:inline-block;width: 7%;text-align:right;">|<br>많이</span>
+    </div>
+    <div class="schdule-form">
+      <input type="time">
+    </div>
+  </div>
 
-  <div class="col-lg-12">
+  <div class="col-lg-6">
     <h1 class="page-header">
       Video Calling <small>Lovely My Pet</small>
     </h1>
@@ -141,6 +155,16 @@
     //밥주기 이벤트
     $(".feed-button").click(function() {
       ws_1.send('{"cmd" : 6, "amount" : ' + $("#feed-slider").slider("value") + '}');
+    });
+    //스케쥴 슬라이더
+    $("#schedule-feed-slider").slider({
+      range: "max",
+      min: 1,
+      max: 9,
+      value: 1,
+      slide: function( event, ui ) {
+        $("#amount").val(ui.value);
+      }
     });
   });
 
