@@ -6,28 +6,51 @@
     <% @group.products.each_with_index do |p, i| %>
     <div class="col-lg-6">
       <h3 class="page-header">
-        Debugger(<%=i%>) <small><%=p.product_id%></small>
+        CMD(<%= i %>) <small><%=p.product_id%></small>
       </h3>
       <input type="text" id="input_<%=p.id%>" placeholder="send a test command">
       <div id="msgs_<%=p.id%>" style="height:200px;overflow:scroll;"></div>
-      <script type="text/javascript">
-        $(document).ready(function(){
-          function show_<%=p.id%>(msg) {
-            $("#msgs_<%=p.id%>").prepend(msg+'<br>');
-          }
-          ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/<%=p.product_id%>');
-          ws_<%=p.id%>.onopen    = function()  { show_<%=p.id%>('websocket opened'); };
-          ws_<%=p.id%>.onclose   = function()  { show_<%=p.id%>('websocket closed'); }
-          ws_<%=p.id%>.onmessage = function(m) { show_<%=p.id%>(Date() + ': ' +  m.data); };
-          $("#input_<%=p.id%>").keypress(function(e) {
-            if (e.which == 13) {
-              ws_<%=p.id%>.send($(this).val());
-              $(this).val("");
-            }
-          });
-        });
-      </script>
     </div>
+    <div class="col-lg-6">
+      <h3 class="page-header">
+        Debugger(<%= i %>) <small><%=p.product_id%></small>
+      </h3>
+      <input type="text" id="debug_input_<%=p.id%>" placeholder="send a test command">
+      <div id="debug_msgs_<%=p.id%>" style="height:200px;overflow:scroll;"></div>
+    </div>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        //cmd javascript
+        function show_<%=p.id%>(msg) {
+          $("#msgs_<%=p.id%>").prepend(msg+'<br>');
+        }
+        ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/<%=p.product_id%>');
+        ws_<%=p.id%>.onopen    = function()  { show_<%=p.id%>('websocket opened'); };
+        ws_<%=p.id%>.onclose   = function()  { show_<%=p.id%>('websocket closed'); }
+        ws_<%=p.id%>.onmessage = function(m) { show_<%=p.id%>(Date() + ': ' +  m.data); };
+        $("#input_<%=p.id%>").keypress(function(e) {
+          if (e.which == 13) {
+            ws_<%=p.id%>.send($(this).val());
+            $(this).val("");
+          }
+        });
+
+        //debug javascript
+        function show_debug_<%=p.id%>(msg) {
+          $("#debug_msgs_<%=p.id%>").prepend(msg+'<br>');
+        }
+        debug_ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/debug/<%=p.product_id%>');
+        debug_ws_<%=p.id%>.onopen    = function()  { show_debug_<%=p.id%>('websocket opened'); };
+        debug_ws_<%=p.id%>.onclose   = function()  { show_debug_<%=p.id%>('websocket closed'); }
+        debug_ws_<%=p.id%>.onmessage = function(m) { show_debug_<%=p.id%>(Date() + ': ' +  m.data); };
+        $("#debug_input_<%=p.id%>").keypress(function(e) {
+          if (e.which == 13) {
+            debug_ws_<%=p.id%>.send($(this).val());
+            $(this).val("");
+          }
+        });
+      });
+    </script>
     <% end %>
   </div>
 
