@@ -42,3 +42,19 @@
 .joystick-delay-message {
   margin-bottom: 25px;
 }
+
+.feed-button {
+  width: 150px;
+  line-height: 50px;
+  margin: 20px auto;
+  border-radius: 5px;
+  background-color: lightskyblue;
+  color: white;
+  text-align: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  &:hover {
+    background-color: #34A4E8;
+  }
+}
+
