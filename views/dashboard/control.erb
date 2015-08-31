@@ -61,6 +61,9 @@
     <h1 class="page-header">
       Joystick <small>websocket</small>
     </h1>
+    <h3>딜레이를 입력 후에 엔터를 눌러주세요(기본 값은 200(0.2s)</h3>
+    <input type="number" max="2000" min="200" id="joystick-delay" value="200">
+    <div class="joystick-delay-message"></div>
     <div class="joystick-limit">
       <div id="joystick" class="joystick" data-code="<%= current_user.groups.first.products.first.product_id %>" ></div>
     </div>
@@ -71,7 +74,20 @@
 
 <script>
   $(document).ready(function() {
-    makeJoystick('#joystick', 160)
+    var $inputDelay = $('#joystick-delay');
+    var joystick = new makeJoystick('#joystick', 160)
+    //인풋 이벤트(엔터 시에 발동)
+    $inputDelay.change(function() {
+      var value = $(this).val();
+      var max = parseInt($(this).attr('max'));
+      var min = parseInt($(this).attr('min'));
+      if( value > max )
+        value = max;
+      else if( value < min )
+        value = min;
+      $('.joystick-delay-message').text(parseFloat((value / 1000)).toFixed(3) + " 초 딜레이로 변경 되었습니다.")
+      joystick.setWebSocketDelay(value);
+    });
   });
 
 document.addEventListener('DOMContentLoaded', function () {
