@@ -47,7 +47,23 @@ namespace :deploy do
   task :start do
     on roles(:app), in: :groups, limit: 3, wait: 10 do
       within release_path do
-        execute :bundle, 'exec thin start -e production -d'
+        execute :bundle, 'exec thin start -C config/thin/staging.yml'
+      end
+    end
+  end
+
+  task :stop do
+    on roles(:app), in: :groups, limit: 3, wait: 10 do
+      within release_path do
+        execute :bundle, 'exec thin stop -C config/thin/staging.yml'
+      end
+    end
+  end
+
+  task :restart do
+    on roles(:app), in: :groups, limit: 3, wait: 10 do
+      within release_path do
+        execute :bundle, 'exec thin restart -C config/thin/staging.yml'
       end
     end
   end
@@ -108,4 +124,4 @@ namespace :deploy do
 end
 
 after "deploy", "deploy:db_setup"
-after "deploy:db_setup", "deploy:start"
+after "deploy:db_setup", "deploy:restart"

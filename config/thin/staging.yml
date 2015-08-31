@@ -1,0 +1,11 @@
+environment: production
+chdir: /home/ec2-user/sinatra-server/current
+address: 0.0.0.0
+port: 3000
+pid: /home/ec2-user/sinatra-server/tmp/pids/thin.pid
+rackup: /home/ec2-user/sinatra-server/current/config.ru
+log: /home/ec2-user/sinatra-server/current/log/thin.log
+max_conns: 10240
+timeout: 30
+max_persistent_conns: 5120
+daemonize: true
