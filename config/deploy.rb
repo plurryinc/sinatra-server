@@ -31,7 +31,7 @@ set :linked_files, fetch(:linked_files, []).push('config/database.yml')
 # set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
 
 # Default value for default_env is {}
-# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+set :default_env, { path: "$PATH" }
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
@@ -40,7 +40,16 @@ namespace :deploy do
   task :start do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
       within release_path do
-        execute 'thin start -e production -d'
+        execute 'bundle exec thin start -e production -d'
+      end
+    end
+  end
+
+  task :restart do
+    on roles(:web), in: :groups, limit: 3, wait: 10 do
+      within release_path do
+        execute 'kill `lsof -t -i:3000`'
+        execute 'bundle exec thin start -e production -d'
       end
     end
   end
