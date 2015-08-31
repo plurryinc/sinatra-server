@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'sinatra/activerecord'
 require 'sinatra/flash'
 require 'sass/plugin/rack'
+require './app'
 
 Dir.glob('./{models,helpers,controllers}/*.rb').each { |file| require file }
 ActiveRecord::Base.configurations = YAML.load_file('config/database.yml')
