@@ -20,10 +20,9 @@ class WebsocketController < ApplicationController
         end
         ws.onmessage do |msg|
           EM.next_tick do
+            begin
             settings.sockets.each do |s|
               if settings.rooms[hash].include? (s.object_id)
-                puts is_valid_cmd? msg
-                puts msg
                 if is_valid_cmd? msg
                   s.send(msg)
                 else
@@ -38,6 +37,9 @@ class WebsocketController < ApplicationController
                   end
                 end
               end
+            end
+            rescue
+              puts "에러 발생"
             end
           end
         end
@@ -65,10 +67,13 @@ class WebsocketController < ApplicationController
         end
         ws.onmessage do |msg|
           EM.next_tick do
+            begin
             settings.sockets.each do |s|
               if settings.rooms["debug_" + hash].include? (s.object_id)
                 s.send(msg)
               end
+            end
+            rescue
             end
           end
         end
