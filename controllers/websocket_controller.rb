@@ -45,7 +45,7 @@ class WebsocketController < ApplicationController
         end
         ws.onclose do
           warn("websocket closed")
-          settings.rooms.delete(hash)
+          settings.rooms[hash].delete(ws.object_id)
           settings.sockets.delete(ws)
         end
       end
@@ -80,7 +80,7 @@ class WebsocketController < ApplicationController
         end
         ws.onclose do
           warn("websocket closed")
-          settings.rooms.delete("debug_" + hash)
+          settings.rooms["debug_" + hash].delete(ws.object_id)
           settings.sockets.delete(ws)
         end
       end
