@@ -38,8 +38,8 @@ class WebsocketController < ApplicationController
                 end
               end
             end
-            rescue
-              puts "에러 발생"
+            rescue Exception => e
+              puts "fail because...=> #{e.message}"
             end
           end
         end
@@ -73,7 +73,8 @@ class WebsocketController < ApplicationController
                 s.send(msg)
               end
             end
-            rescue
+            rescue Exception => e
+              puts "fail because...=> #{e.message}"
             end
           end
         end
