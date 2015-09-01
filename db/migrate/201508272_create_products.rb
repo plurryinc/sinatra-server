@@ -8,6 +8,7 @@ class CreateProducts < ActiveRecord::Migration
       t.string  :product_id,    null: false
       t.string  :secret_token,  null: false
       t.integer :product_type,  null: false
+      t.text    :schedule
 
       t.timestamps null: false
     end

@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 20150824141615) do
     t.string   "product_id",   null: false
     t.string   "secret_token", null: false
     t.integer  "product_type", null: false
+    t.text     "schedule"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
   end
