@@ -100,6 +100,11 @@
 <!-- /.container-fluid -->
 
 <script>
+  window.onload = function() {
+    for(var i = 0; i < 20; i++) {
+      ws_1.send('{ "cmd": 3, "id": ' + i + '}');
+    }
+  }
   $(document).ready(function() {
     var json_data = [];
     var $timepicker = $('#schedule-timepicker').timepicker();
@@ -128,12 +133,12 @@
       return ((h < 10 ? "0" : "") + (h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + " " + meridian );
     }
 
-    for(var i = 1; i <= 20; i++) {
+    for(var i = 0; i < 20; i++) {
       json_data.push({
         id: i,
-        status: false,
-        time: secondToStringTime(parseInt(Math.random() * 86400 + 1)),
-        amount: parseInt(Math.random() * 9 + 1)
+        status: true,
+        time: null,
+        amount: null
       });
     }
 
@@ -159,13 +164,12 @@
     //버튼 이벤트
     $('.schedule-add-button').click(function() {
       var time = $timepicker.data('timepicker').getTime();
-      console.log(time);
       var amount = $("#schedule-feed-slider").slider("value");
       var All = scheduleTable.bootstrapTable('getData');
       for(var i = 0; i < All.length; i++) {
         if(All[i].status == true) {
-          scheduleTable.bootstrapTable('updateRow', { index: All[i].id - 1, row: { status: false, time: time, amount: amount } });
-          ws_1.send('{ "cmd": 4, "id": ' + (All[i].id - 1) + ', "timestamp": ' + stringToSecondTime(time) + ', "amount": ' + amount + '}');
+          scheduleTable.bootstrapTable('updateRow', { index: All[i].id, row: { status: false, time: time, amount: amount } });
+          ws_1.send('{ "cmd": 4, "id": ' + All[i].id + ', "timestamp": ' + stringToSecondTime(time) + ', "amount": ' + amount + '}');
           break;
         }
       }
