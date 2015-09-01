@@ -63,8 +63,8 @@ var makeJoystick = function(selector, sqhw) {
 
       y *= -1;
 
-      vec.left = y + x;
-      vec.right = y - x;
+      vec.left = y + x + 50;
+      vec.right = y - x + 50;
 
     },
     stop: function() {
