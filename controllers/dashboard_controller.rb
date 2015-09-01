@@ -15,4 +15,9 @@ class DashboardController < ApplicationController
   get '/station' do
     erb :'dashboard/station'
   end
+
+  get '/schedule/:name' do
+    @group = Group.where(name: params[:name]).take
+    erb :'dashboard/schedule', { :layout => :'layouts/dashboard' }
+  end
 end

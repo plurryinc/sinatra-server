@@ -22,6 +22,8 @@ class WebsocketController < ApplicationController
           EM.next_tick do
             settings.sockets.each do |s|
               if settings.rooms[hash].include? (s.object_id)
+                puts is_valid_cmd? msg
+                puts msg
                 if is_valid_cmd? msg
                   s.send(msg)
                 else

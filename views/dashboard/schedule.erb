@@ -1,0 +1,188 @@
+<div class="container-fluid">
+<!-- Page Heading -->
+<!-- row -->
+<div class="row">
+  <div class="col-lg-12">
+    <% @group.products.where(product_type: 1).each_with_index do |p, i| %>
+    <div class="col-lg-6">
+      <h3 class="page-header">
+        CMD(<%= i %>) <small><%=p.product_id%></small>
+      </h3>
+      <input type="text" id="input_<%=p.id%>" placeholder="send a test command">
+      <div id="msgs_<%=p.id%>" style="height:200px;overflow:scroll;"></div>
+    </div>
+    <div class="col-lg-6">
+      <h3 class="page-header">
+        Debugger(<%= i %>) <small><%=p.product_id%></small>
+      </h3>
+      <input type="text" id="debug_input_<%=p.id%>" placeholder="send a test command">
+      <div id="debug_msgs_<%=p.id%>" style="height:200px;overflow:scroll;"></div>
+    </div>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        //cmd javascript
+        function show_<%=p.id%>(msg) {
+          $("#msgs_<%=p.id%>").prepend(msg+'<br>');
+        }
+        ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/<%=p.product_id%>');
+        ws_<%=p.id%>.onopen    = function()  { show_<%=p.id%>('websocket opened'); };
+        ws_<%=p.id%>.onclose   = function()  { show_<%=p.id%>('websocket closed'); }
+        ws_<%=p.id%>.onmessage = function(m) { show_<%=p.id%>(Date() + ': ' +  m.data); };
+        $("#input_<%=p.id%>").keypress(function(e) {
+          if (e.which == 13) {
+            ws_<%=p.id%>.send($(this).val());
+            $(this).val("");
+          }
+        });
+
+        //debug javascript
+        function show_debug_<%=p.id%>(msg) {
+          $("#debug_msgs_<%=p.id%>").prepend(msg+'<br>');
+        }
+        debug_ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/debug/<%=p.product_id%>');
+        debug_ws_<%=p.id%>.onopen    = function()  { show_debug_<%=p.id%>('websocket opened'); };
+        debug_ws_<%=p.id%>.onclose   = function()  { show_debug_<%=p.id%>('websocket closed'); }
+        debug_ws_<%=p.id%>.onmessage = function(m) { show_debug_<%=p.id%>(Date() + ': ' +  m.data); };
+        $("#debug_input_<%=p.id%>").keypress(function(e) {
+          if (e.which == 13) {
+            debug_ws_<%=p.id%>.send($(this).val());
+            $(this).val("");
+          }
+        });
+      });
+    </script>
+    <% end %>
+  </div>
+
+  <div class="col-lg-12">
+    <h1 class="page-header">
+      Schedule <small>For My Pet</small>
+    </h1>
+    <div class="schedule-form">
+      <p>
+        <label for="schedule-amount">밥 줄 정도 :</label>
+        <input type="text" id="schedule-amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+      </p>
+      <div id="schedule-feed-slider"></div>
+      <p>
+        <label style="margin-top: 25px;" >밥 줄 시간 :</label>
+        <input type="text" id="schedule-time" readonly style="border:0; color:#f6931f; font-weight:bold;">
+        <p>※ 기본 간격은 15 분 단위이며, 직접 입력 시에는 입력 후 포커스를 해제 해주세요.</p>
+      </p>
+      <div class="input-group bootstrap-timepicker timepicker">
+        <input id="schedule-timepicker" type="text" class="form-control input-small" value="12:00 PM">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+      </div>
+      <div class="buttons">
+        <div class="schedule-add-button">스케쥴 추가하기</div>
+        <div class="schedule-delete-button">스케쥴 삭제하기</div>
+      </div>
+    </div>
+    <div class="schedule-list">
+      <h1 class="page-header">
+        Schedule List <small>Pet Feed Time</small>
+      </h1>
+      <table data-sort-name="id" data-height="200" data-click-to-select="true">
+        <thead>
+          <tr>
+            <th data-field="state" data-checkbox="true"></th>
+            <th data-field="id" data-align="center">Slot</th>
+            <th data-field="status" data-align="center">Slot Status</th>
+            <th data-field="time" data-align="center">Feed Time</th>
+            <th data-field="amount" data-align="center">Feed Amount</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- /.row -->
+<!-- /.container-fluid -->
+
+<script>
+  $(document).ready(function() {
+    var json_data = [];
+    var $timepicker = $('#schedule-timepicker').timepicker();
+
+    function stringToSecondTime(str) {
+      var arr = str.split(':');
+      var hours = parseInt(arr[0]) % 12;
+      var minutes = parseInt(arr[1].split(' ')[0]);
+      var meridian = arr[1].split(' ')[1];
+      if( meridian == "PM" ) hours += 12;
+      return (3600 * hours) + (minutes * 60);
+    }
+
+    function secondToStringTime(sec) {
+      if(typeof(sec) != "number") return;
+      var h = Math.floor(sec / 3600);
+      var m = Math.floor(sec % 3600 / 60);
+      var meridian = sec >= 3600 * 12 ? "PM" : "AM";
+      if(meridian == "PM") {
+        if(h == 24) {
+          meridian = "AM";
+        }else if(h > 12) {
+          h -= 12;
+        }
+      }
+      return ((h < 10 ? "0" : "") + (h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + " " + meridian );
+    }
+
+    for(var i = 1; i <= 20; i++) {
+      json_data.push({
+        id: i,
+        status: false,
+        time: secondToStringTime(parseInt(Math.random() * 86400 + 1)),
+        amount: parseInt(Math.random() * 9 + 1)
+      });
+    }
+
+    var scheduleTable = $('table').bootstrapTable({
+      data: json_data
+    });
+    //스케쥴 슬라이더
+    $("#schedule-feed-slider").slider({
+      range: "max",
+      min: 1,
+      max: 9,
+      value: 1,
+      slide: function( event, ui ) {
+        $("#schedule-amount").val(ui.value);
+      }
+    });
+    $("#schedule-amount").val($("#schedule-feed-slider").slider("value"));
+    //스케쥴 시간 선택
+    $('#schedule-timepicker').change(function() {
+      $("#schedule-time").val(stringToSecondTime($timepicker.data('timepicker').getTime()));
+    });
+    $("#schedule-time").val(stringToSecondTime($timepicker.data('timepicker').getTime()));
+    //버튼 이벤트
+    $('.schedule-add-button').click(function() {
+      var time = $timepicker.data('timepicker').getTime();
+      console.log(time);
+      var amount = $("#schedule-feed-slider").slider("value");
+      var All = scheduleTable.bootstrapTable('getData');
+      for(var i = 0; i < All.length; i++) {
+        if(All[i].status == true) {
+          scheduleTable.bootstrapTable('updateRow', { index: All[i].id - 1, row: { status: false, time: time, amount: amount } });
+          ws_1.send('{ "cmd": 4, "id": ' + (All[i].id - 1) + ', "timestamp": ' + stringToSecondTime(time) + ', "amount": ' + amount + '}');
+          break;
+        }
+      }
+    });
+
+    $('.schedule-delete-button').click(function() {
+      var selectArray = scheduleTable.bootstrapTable('getSelections');
+      var values = [];
+      $.each(selectArray, function(index, row) {
+        values.push(row.id);
+      });
+      scheduleTable.bootstrapTable('remove', { field: "id", values: values });
+      $.each(values, function(index, val) {
+        scheduleTable.bootstrapTable('append', { id: val, status: true, time: null, amount: null });
+      })
+      //강제 새로고침
+      scheduleTable.bootstrapTable('updateRow', {index: 1, row: {} });
+    });
+  });
+</script>
