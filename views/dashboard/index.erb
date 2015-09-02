@@ -66,15 +66,24 @@
                     </div>
                     <div class="panel-body">
                         <div class="table-responsive">
-                          <table id="schedule-table" data-sort-name="id" data-height="200">
+                          <table id="schedule-table" data-sort-name="id" data-height="400">
                             <thead>
                               <tr>
                                 <th data-field="id" data-align="center">Slot</th>
+                                <th data-field="status" data-align="center">Slot Status</th>
                                 <th data-field="time" data-align="center">Feed Time</th>
                                 <th data-field="amount" data-align="center">Feed Amount</th>
                               </tr>
                             </thead>
                           </table>
+                          <script>
+                            $(document).ready(function() {
+                              var schedule = <%= JSON.generate p.schedule %>
+                              var scheduleTable = $('#schedule-table').bootstrapTable({
+                                data: schedule
+                              });
+                            });
+                          </script>
                         </div>
                     </div>
                 </div>
@@ -83,23 +92,5 @@
       <% end %>
     <% end %>
     <!-- /.row -->
-
 </div>
-<script>
-  $(document).ready(function() {
-    var json_data = [];
-
-    for(var i = 0; i < 20; i++) {
-      json_data.push({
-        id: i,
-        time: null,
-        amount: null
-      });
-    }
-
-    var scheduleTable = $('#schedule-table').bootstrapTable({
-      data: json_data
-    });
-  });
-</script>
 <!-- /.container-fluid -->
