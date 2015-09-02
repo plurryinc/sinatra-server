@@ -4,6 +4,7 @@ class DashboardController < ApplicationController
   end
 
   get '' do
+    @groups = current_user.groups
     erb :'dashboard/index', { :layout => :'layouts/dashboard' }
   end
 

@@ -23,10 +23,12 @@ ActiveRecord::Schema.define(version: 20150901093431) do
   add_index "groups", ["name"], name: "index_groups_on_name", unique: true
 
   create_table "logs", force: :cascade do |t|
-    t.integer "product_id"
-    t.integer "message_code"
-    t.string  "message_type"
-    t.string  "message"
+    t.integer  "product_id"
+    t.integer  "message_code"
+    t.string   "message_type"
+    t.string   "message"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "products", force: :cascade do |t|

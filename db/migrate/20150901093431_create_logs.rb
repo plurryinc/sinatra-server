@@ -5,6 +5,8 @@ class CreateLogs < ActiveRecord::Migration
       t.integer :message_code
       t.string  :message_type
       t.string  :message
+
+      t.timestamps null: false
     end
   end
 end
