@@ -30,8 +30,10 @@ class WebsocketController < ApplicationController
                     settings.rooms["debug_" + hash].each do |d|
                       settings.sockets.each do |s|
                         if s.object_id == d
-                          product = Product.where(product_id: hash).take
-                          Log.create_log(product.id, msg)
+                          if is_valid_json? msg
+                            product = Product.where(product_id: hash).take
+                            Log.create_log(product.id, msg)
+                          end
                           s.send msg
                         end
                       end
@@ -72,9 +74,7 @@ class WebsocketController < ApplicationController
             begin
             settings.sockets.each do |s|
               if settings.rooms["debug_" + hash].include? (s.object_id)
-                if is_valid_json? msg
-                  s.send(msg)
-                end
+                s.send(msg)
               end
             end
             rescue Exception => e
