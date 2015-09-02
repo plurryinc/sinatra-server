@@ -63,7 +63,7 @@ class Log < ActiveRecord::Base
         if message["amount"] == 0
           "배터리가 거의 없습니다."
         else
-          "#{message["amount"] + 1} / 3 만큼 남았습니다."
+          "배터리가 #{message["amount"] + 1} / 3 만큼 남았습니다."
         end
       else
       end
@@ -72,7 +72,11 @@ class Log < ActiveRecord::Base
       when 201
         "스케쥴에 따라서 밥을 주었습니다."
       when 202
-        "배터리 상태는 #{message["amount"] + 1} / 3 입니다."
+        if message["amount"] == 0
+          "배터리가 거의 없습니다."
+        else
+          "배터리가 #{message["amount"] + 1} / 3 만큼 남았습니다."
+        end
       else
       end
     end
