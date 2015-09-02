@@ -75,7 +75,9 @@
   }
 }
 
-.logs {
-  max-height: 500px;
-  overflow-y: scroll;
+.product {
+  .panel {
+    height: 500px;
+    overflow-y: scroll;
+  }
 }
