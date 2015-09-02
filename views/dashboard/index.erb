@@ -47,7 +47,7 @@
                     </div>
                     <div class="panel-body">
                         <div class="list-group">
-                          <% p.logs.each do |l| %>
+                          <% p.logs.reverse.each do |l| %>
                             <% unless l.dashboard.nil? %>
                             <div class="list-group-item">
                               <span class="badge"><%= l.created_time %></span>
