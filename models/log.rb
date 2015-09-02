@@ -71,6 +71,8 @@ class Log < ActiveRecord::Base
       case message_code
       when 201
         "스케쥴에 따라서 밥을 주었습니다."
+      when 202
+        "배터리 상태는 #{message["amount"] + 1} / 3 입니다."
       else
       end
     end
