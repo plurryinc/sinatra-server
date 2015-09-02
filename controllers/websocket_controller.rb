@@ -24,14 +24,14 @@ class WebsocketController < ApplicationController
             settings.sockets.each do |s|
               if settings.rooms[hash].include? (s.object_id)
                 if is_valid_cmd? msg
-                  product = Product.where(product_id: hash).take
-                  Log.create_log(product.id, msg)
                   s.send msg
                 else
                   unless settings.rooms["debug_" + hash].nil?
                     settings.rooms["debug_" + hash].each do |d|
                       settings.sockets.each do |s|
                         if s.object_id == d
+                          product = Product.where(product_id: hash).take
+                          Log.create_log(product.id, msg)
                           s.send msg
                         end
                       end
@@ -73,8 +73,6 @@ class WebsocketController < ApplicationController
             settings.sockets.each do |s|
               if settings.rooms["debug_" + hash].include? (s.object_id)
                 if is_valid_json? msg
-                  product = Product.where(product_id: hash).take
-                  Log.create_log(product.id, msg)
                   s.send(msg)
                 end
               end
