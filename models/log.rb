@@ -59,7 +59,7 @@ class Log < ActiveRecord::Base
         else
           "#{message["amount"]} / 3 만큼 남아있습니다."
         end
-      when 108
+      when 110
         if message["amount"] == 0
           "배터리가 거의 없습니다."
         else
