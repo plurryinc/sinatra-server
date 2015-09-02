@@ -7,9 +7,8 @@ class Log < ActiveRecord::Base
     msg_hash = JSON.parse msg
     begin
       #it's real server
-=begin
       if !msg_hash["rs"].nil?
-        if(msg_hash["errcode"] == 0 && [104, 106, 107, 110].include?(msg_hash["rs"]))
+        if [104, 106, 107, 110].include? msg_hash["rs"]
           Log.create({
             product_id: product_id,
             message: msg_hash,
@@ -17,7 +16,7 @@ class Log < ActiveRecord::Base
             message_code: msg_hash["rs"]
           })
         end
-=end
+=begin
       #it's test
       if !msg_hash["cmd"].nil?
         unless [8, 9].include? msg_hash["cmd"]
@@ -28,6 +27,7 @@ class Log < ActiveRecord::Base
             message_code: msg_hash["cmd"]
           })
         end
+=end
       elsif !msg_hash["report"].nil?
         Log.create({
           product_id: product_id,
