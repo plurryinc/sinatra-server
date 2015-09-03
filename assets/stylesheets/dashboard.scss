@@ -81,3 +81,38 @@
     overflow-y: scroll;
   }
 }
+
+.product-registration-form {
+  .field {
+    text-align: center;
+    label {
+      font-size: 18px;
+    }
+    input[type=text] {
+      width: 280px;
+      height: 45px;
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: 3px solid #000;
+      border-radius: 5px;
+      color: black;
+      outline: none;
+      box-sizing: border-box;
+      &::-webkit-input-placeholder {
+        color: rgba(0, 0, 0, 0.2);
+      }
+    }
+    input[type=submit] {
+      margin: 20px 0px;
+      background-color: darkblue;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 50px;
+      &:hover {
+        background-color: #2B9FC5;
+      }
+    }
+  }
+}

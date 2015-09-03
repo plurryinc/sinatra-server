@@ -21,4 +21,8 @@ class DashboardController < ApplicationController
     @group = Group.where(name: params[:name]).take
     erb :'dashboard/schedule', { :layout => :'layouts/dashboard' }
   end
+
+  get '/registration' do
+    erb :'dashboard/registration', { :layout => :'layouts/dashboard' }
+  end
 end

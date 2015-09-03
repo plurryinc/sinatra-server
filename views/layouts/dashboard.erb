@@ -154,22 +154,22 @@
       <li <%="class='active'" if request.path_info == ""%>>
         <a href="/dashboard"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
       </li>
-      <% if current_user.groups.empty? %>
-      <li <%="class='active'" if request.path_info == "/dashboard/new"%>>
-        <a href="/dashboard/new"><i class="fa fa-fw fa-plus"></i> 새로운 제품등록</a>
-      </li>
-      <% end %>
       <% current_user.groups.each do |g| %>
-      <li <%="class='active'" if request.path_info == "/control/#{g.name}"%>>
-        <a href="/dashboard/control/<%=g.name%>"><i class="fa fa-fw fa-desktop"></i> <%=g.name%></a>
-      </li>
-      <li <%="class='active'" if request.path_info == "/dashboard/schedule"%>>
-        <a href="/dashboard/schedule/<%=g.name%>"><i class="fa fa-fw fa-calendar"></i> Schedule</a>
-      </li>
-      <li <%="class='active'" if request.path_info == "/dashboard/new"%>>
-        <a href="/dashboard/new"><i class="fa fa-fw fa-plus"></i> 새로운 제품등록</a>
+      <li>
+        <a href="javascript:;" data-toggle="collapse" data-target="#<%= g.name %>"><i class="fa fa-fw fa-laptop"></i> <%= g.name %> <i class="fa fa-fw fa-caret-down"></i></a>
+        <ul id="<%= g.name %>" class="collapse">
+          <li <%="class='active'" if request.path_info == "/control/#{g.name}"%>>
+            <a href="/dashboard/control/<%=g.name%>"><i class="fa fa-fw fa-gamepad"></i>Control</a>
+          </li>
+          <li <%="class='active'" if request.path_info == "/dashboard/schedule"%>>
+            <a href="/dashboard/schedule/<%=g.name%>"><i class="fa fa-fw fa-calendar"></i> Schedule</a>
+          </li>
+        </ul>
       </li>
       <% end %>
+      <li <%="class='active'" if request.path_info == "/dashboard/registration"%>>
+        <a href="/dashboard/registration"><i class="fa fa-fw fa-plus"></i> 새로운 제품등록</a>
+      </li>
       <!--
       <li>
         <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>
@@ -186,17 +186,7 @@
       <li>
         <a href="bootstrap-grid.html"><i class="fa fa-fw fa-wrench"></i> Bootstrap Grid</a>
       </li>
-      <li>
-        <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Dropdown <i class="fa fa-fw fa-caret-down"></i></a>
-        <ul id="demo" class="collapse">
-          <li>
-            <a href="#">Dropdown Item</a>
-          </li>
-          <li>
-            <a href="#">Dropdown Item</a>
-          </li>
-        </ul>
-      </li>
+      
       <li>
         <a href="blank-page.html"><i class="fa fa-fw fa-file"></i> Blank Page</a>
       </li>
