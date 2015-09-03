@@ -3,6 +3,8 @@ class Log < ActiveRecord::Base
 
   serialize :message, Hash
 
+  validates :created_at, uniqueness: true
+
   def self.create_log(product_id, msg)
     msg_hash = JSON.parse msg
     begin
