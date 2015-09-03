@@ -22,6 +22,17 @@ class DashboardController < ApplicationController
     erb :'dashboard/schedule', { :layout => :'layouts/dashboard' }
   end
 
+  get '/:name/new' do
+    @group = Group.where(name: params[:name]).take
+    erb :'dashboard/new', { :layout => :'layouts/dashboard' }
+  end
+
+  post '/:name' do
+    group = Group.where(name: params[:name]).take
+    group.update_product(params[:products])
+    redirect "/dashboard"
+  end
+
   get '/registration' do
     erb :'dashboard/registration', { :layout => :'layouts/dashboard' }
   end

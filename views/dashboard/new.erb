@@ -4,13 +4,9 @@
   <div class="row">
     <div class="col-lg-12">
       <h1 class="page-header">
-        Product Registration <small>For Purchaser</small>
+        Product Added <small>For Purchaser</small>
       </h1>
-      <form class="product-registration-form" method="post" action="/dashboard/registration">
-        <div class="field">
-          <label>Group Name</label><br>
-          <input type="text" name="group" placeholder: "제품의 이름을 지어주세요..." required>
-        </div>
+      <form class="product-registration-form" method="post" action="/dashboard/<%= @group.name %>">
         <div class="field">
           <label>Product Code 1</label><br>
           <input type="text" name="products[]" placeholder: "제품의 코드를 입력..." AUTOCOMPLETE=OFF>

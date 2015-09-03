@@ -15,12 +15,23 @@ class Group < ActiveRecord::Base
 
     unless products_input.empty?
       group = Group.create(user_id: user_id, name: name)
-      products_input.each do |product|
-        product.update(group_id: group.id)
+      unless group.nil?
+        products_input.each do |product|
+          product.update(group_id: group.id)
+        end
+        return true
+      else
+        return false
       end
-      return true
     else
       return false
+    end
+  end
+
+  def update_product products
+    products.each do |product|
+      p = Product.where(group_id: nil, code: product).take
+      p.update(group_id: id) unless p.nil?
     end
   end
 end
