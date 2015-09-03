@@ -3,8 +3,6 @@ class Log < ActiveRecord::Base
 
   serialize :message, Hash
 
-  validates :created_at, uniqueness: true
-
   def self.create_log(product_id, msg)
     msg_hash = JSON.parse msg
     begin
@@ -15,7 +13,8 @@ class Log < ActiveRecord::Base
             product_id: product_id,
             message: msg_hash,
             message_type: "rs",
-            message_code: msg_hash["rs"]
+            message_code: msg_hash["rs"],
+            create_time: Time.now.to_i
           })
         end
 =begin
@@ -35,7 +34,8 @@ class Log < ActiveRecord::Base
           product_id: product_id,
           message: msg_hash,
           message_type: "report",
-          message_code: msg_hash["report"]
+          message_code: msg_hash["report"],
+          create_time: Time.now.to_i
         })
       else
         puts "not save Log...because it's not Hash and...is_valid_json? method not running"
