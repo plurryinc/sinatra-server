@@ -25,4 +25,14 @@ class DashboardController < ApplicationController
   get '/registration' do
     erb :'dashboard/registration', { :layout => :'layouts/dashboard' }
   end
+
+  post '/registration' do
+    redirect "/dashboard/registration" if params[:group].nil? && params[:products].empty?
+    result = Group.create_group(current_user.id, params)
+    if result
+      redirect "/dashboard"
+    else
+      redirect "/dashboard/registration"
+    end
+  end
 end
