@@ -159,13 +159,13 @@
         <a href="javascript:;" data-toggle="collapse" data-target="#<%= g.name %>"><i class="fa fa-fw fa-laptop"></i> <%= g.name %> <i class="fa fa-fw fa-caret-down"></i></a>
         <ul id="<%= g.name %>" class="collapse">
           <li <%="class='active'" if request.path_info == "/control/#{g.name}"%>>
-            <a href="/dashboard/control/<%=g.name%>"><i class="fa fa-fw fa-gamepad"></i>Control</a>
+            <a href="/dashboard/control/<%=g.name%>"><i class="fa fa-fw fa-gamepad"></i> Control</a>
           </li>
           <li <%="class='active'" if request.path_info == "/dashboard/schedule"%>>
             <a href="/dashboard/schedule/<%=g.name%>"><i class="fa fa-fw fa-calendar"></i> Schedule</a>
           </li>
           <li <%="class='active'" if request.path_info == "/dashboard/#{g.name}/new" %>>
-            <a href="/dashboard/<%=g.name%>/new"><i class="fa fa-fw fa-calendar"></i>New</a>
+            <a href="/dashboard/<%=g.name%>/new"><i class="fa fa-fw fa-calendar"></i> New</a>
           </li>
         </ul>
       </li>
