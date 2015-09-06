@@ -116,6 +116,31 @@
         color: rgba(0, 0, 0, 0.2);
       }
     }
+    .product {
+      width: 280px;
+      height: 45px;
+      margin: 0px auto;
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: rgba(204, 204, 204, 0.5);
+      border: 3px solid #000;
+      border-radius: 5px;
+      color: black;
+      outline: none;
+      box-sizing: border-box;
+      &::-webkit-input-placeholder {
+        color: rgba(0, 0, 0, 0.2);
+      }
+      .remove {
+        float: right;
+        line-height: 15px;
+        color: black;
+        cursor: pointer;
+        &:hover {
+          color: red;
+        }
+      }
+    }
     input[type=submit], .add-product {
       width: 200px;
       margin: 10px auto;

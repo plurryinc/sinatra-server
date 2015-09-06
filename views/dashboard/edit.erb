@@ -1,0 +1,61 @@
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <!-- row -->
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">
+        Product Edit <small>For Purchaser</small>
+      </h1>
+      <form class="product-registration-form" method="post" action="/dashboard/<%= @group.name %>">
+        <div class="field">
+          <label>이름 바꾸기</label>
+          <input type="text" name="group" placeholder="제품의 이름을 지어주세요..." value="<%= @group.name %>">
+        </div>
+        <div class="products">
+          <div class="field">
+            <label>스마트폰 부분</label>
+            <% if @type3.nil? %>
+              <input type="text" name="products[]" placeholder="구동부의 코드를 입력..." AUTOCOMPLETE=OFF>
+            <% else %>
+              <div class="product">
+                <%= @type3.code %>
+                <a href="/dashboard/remove/<%= @type3.code %>">
+                  <i class="remove fa fa-lg fa-times"></i>
+                </a>
+              </div>
+            <% end %>
+          </div>
+          <div class="field">
+            <label>밥통 부분</label>
+            <% if @type1.nil? %>
+              <input type="text" name="products[]" placeholder="구동부의 코드를 입력..." AUTOCOMPLETE=OFF>
+            <% else %>
+              <div class="product">
+                <%= @type1.code %>
+                <a href="/dashboard/remove/<%= @type1.code %>">
+                  <i class="remove fa fa-lg fa-times"></i>
+                </a>
+              </div>
+            <% end %>
+          </div>
+          <div class="field">
+            <label>구동부(바퀴) 부분</label>
+            <% if @type2.nil? %>
+              <input type="text" name="products[]" placeholder="구동부의 코드를 입력..." AUTOCOMPLETE=OFF>
+            <% else %>
+              <div class="product">
+                <%= @type2.code %>
+                <a href="/dashboard/remove/<%= @type2.code %>">
+                  <i class="remove fa fa-lg fa-times"></i>
+                </a>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <div class="field">
+          <input type="submit" value="수정하기">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

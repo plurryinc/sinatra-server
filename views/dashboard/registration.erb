@@ -8,36 +8,27 @@
       </h1>
       <form class="product-registration-form" method="post" action="/dashboard/registration">
         <div class="field">
-          <label>Group Name</label>
+          <label>이름 짓기</label>
           <input type="text" name="group" placeholder="제품의 이름을 지어주세요..." required>
         </div>
         <div class="products">
           <div class="field">
-            <label>Product Code 1</label>
-            <input type="text" name="products[]" placeholder="제품의 코드를 입력..." AUTOCOMPLETE=OFF>
+            <label>스마트폰 부분</label>
+            <input type="text" name="products[]" placeholder="스마트폰의 코드를 입력..." AUTOCOMPLETE=OFF>
+          </div>
+          <div class="field">
+            <label>밥통 부분</label>
+            <input type="text" name="products[]" placeholder="밥통의 코드를 입력..." AUTOCOMPLETE=OFF>
+          </div>
+          <div class="field">
+            <label>구동부(바퀴) 부분</label>
+            <input type="text" name="products[]" placeholder="구동부의 코드를 입력..." AUTOCOMPLETE=OFF>
           </div>
         </div>
         <div class="field">
-          <div class="add-product">제품 코드 추가</div>
           <input type="submit" value="등록하기">
         </div>
       </form>
     </div>
   </div>
 </div>
-<script>
-  $(document).ready(function() {
-    $('.add-product').click(function() {
-      var $products = $('.products');
-      var $div = $('<div/>').addClass('field');
-      var $label = $('<label/>');
-      var $input = $('<input/>');
-      $label.text("Product Code " + ($products.children().length + 1));
-      $input.attr('type', 'text');
-      $input.attr('name', 'product[]');
-      $input.attr('placeholder', '제품의 코드를 입력...');
-      $input.attr('AUTOCOMPLETE', 'NO');
-      $products.append($div.append($label, $input));
-    });
-  });
-</script>

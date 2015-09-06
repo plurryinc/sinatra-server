@@ -36,14 +36,25 @@ class DashboardController < ApplicationController
     end
   end
 
-  get '/:name/new' do
+  get '/:name/edit' do
     @group = Group.where(name: params[:name]).take
-    erb :'dashboard/new', { :layout => :'layouts/dashboard' }
+    products = @group.products
+    @type1 = products.where(product_type: 1).take
+    @type2 = products.where(product_type: 2).take
+    @type3 = products.where(product_type: 3).take
+    erb :'dashboard/edit', { :layout => :'layouts/dashboard' }
+  end
+
+  get '/remove/:code' do
+    product = Product.where(code: params[:code]).take
+    product.update(group_id: nil)
+    redirect request.env['HTTP_REFERER']
   end
 
   post '/:name' do
     group = Group.where(name: params[:name]).take
-    group.update_product(params[:products])
+    group.update(name: params[:group]) unless params[:group].strip == ""
+    group.update_product(params[:products]) unless params[:products].empty?
     redirect "/dashboard"
   end
 end

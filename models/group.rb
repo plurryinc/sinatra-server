@@ -6,11 +6,19 @@ class Group < ActiveRecord::Base
     name = params[:group]
     products = params[:products]
 
-    products_input = [] 
+    products_input = []
 
     products.each do |product|
       p = Product.where(group_id: nil, code: product).take
-      products_input << p unless p.nil?
+      unless p.nil?
+        if products_input.empty?
+          products_input << p
+        else
+          products_input.each do |product|
+            products_input << p unless product.product_type == p.product_type
+          end
+        end
+      end
     end
 
     unless products_input.empty?
@@ -31,7 +39,17 @@ class Group < ActiveRecord::Base
   def update_product products
     products.each do |product|
       p = Product.where(group_id: nil, code: product).take
-      p.update(group_id: id) unless p.nil?
+      unless p.nil?
+        p.update(group_id: id) unless has_type_n? p.product_type
+      end
     end
   end
+
+  def has_type_n? n
+    products.each do |product|
+      return true if product.product_type == n
+    end
+    return false
+  end
+
 end
