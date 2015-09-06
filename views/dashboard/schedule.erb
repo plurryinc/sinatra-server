@@ -3,6 +3,47 @@
 <!-- row -->
 <div class="row">
   <div class="col-lg-12">
+    <h1 class="page-header">
+      Schedule <small>For My Pet</small>
+    </h1>
+    <div class="schedule-form">
+      <p>
+        <label for="schedule-amount">밥 줄 정도 :</label>
+        <input type="text" id="schedule-amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+      </p>
+      <div id="schedule-feed-slider"></div>
+      <p>
+        <label style="margin-top: 25px;" >밥 줄 시간 :</label>
+        <input type="text" id="schedule-time" readonly style="border:0; color:#f6931f; font-weight:bold;">
+        <p>※ 기본 간격은 15 분 단위이며, 직접 입력 시에는 입력 후 포커스를 해제 해주세요.</p>
+      </p>
+      <div class="input-group bootstrap-timepicker timepicker">
+        <input id="schedule-timepicker" type="text" class="form-control input-small" value="12:00 PM">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+      </div>
+      <div class="buttons">
+        <div class="schedule-add-button">스케쥴 추가하기</div>
+        <div class="schedule-delete-button">스케쥴 삭제하기</div>
+      </div>
+    </div>
+    <div class="schedule-list">
+      <h1 class="page-header">
+        Schedule List <small>Pet Feed Time</small>
+      </h1>
+      <table data-sort-name="id" data-height="200" data-click-to-select="true">
+        <thead>
+          <tr>
+            <th data-field="state" data-checkbox="true"></th>
+            <th data-field="id" data-align="center">Slot</th>
+            <th data-field="status" data-align="center">Slot Status</th>
+            <th data-field="time" data-align="center">Feed Time</th>
+            <th data-field="amount" data-align="center">Feed Amount</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+  <div class="col-lg-12">
     <% @group.products.where(product_type: 1).each_with_index do |p, i| %>
     <div class="col-lg-6">
       <h3 class="page-header">
@@ -52,48 +93,6 @@
       });
     </script>
     <% end %>
-  </div>
-
-  <div class="col-lg-12">
-    <h1 class="page-header">
-      Schedule <small>For My Pet</small>
-    </h1>
-    <div class="schedule-form">
-      <p>
-        <label for="schedule-amount">밥 줄 정도 :</label>
-        <input type="text" id="schedule-amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
-      </p>
-      <div id="schedule-feed-slider"></div>
-      <p>
-        <label style="margin-top: 25px;" >밥 줄 시간 :</label>
-        <input type="text" id="schedule-time" readonly style="border:0; color:#f6931f; font-weight:bold;">
-        <p>※ 기본 간격은 15 분 단위이며, 직접 입력 시에는 입력 후 포커스를 해제 해주세요.</p>
-      </p>
-      <div class="input-group bootstrap-timepicker timepicker">
-        <input id="schedule-timepicker" type="text" class="form-control input-small" value="12:00 PM">
-        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-      </div>
-      <div class="buttons">
-        <div class="schedule-add-button">스케쥴 추가하기</div>
-        <div class="schedule-delete-button">스케쥴 삭제하기</div>
-      </div>
-    </div>
-    <div class="schedule-list">
-      <h1 class="page-header">
-        Schedule List <small>Pet Feed Time</small>
-      </h1>
-      <table data-sort-name="id" data-height="200" data-click-to-select="true">
-        <thead>
-          <tr>
-            <th data-field="state" data-checkbox="true"></th>
-            <th data-field="id" data-align="center">Slot</th>
-            <th data-field="status" data-align="center">Slot Status</th>
-            <th data-field="time" data-align="center">Feed Time</th>
-            <th data-field="amount" data-align="center">Feed Amount</th>
-          </tr>
-        </thead>
-      </table>
-    </div>
   </div>
 </div>
 <!-- /.row -->

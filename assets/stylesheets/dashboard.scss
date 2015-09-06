@@ -2,13 +2,23 @@
   clear: both;
 }
 
+#client_btn, #dial {
+  float: right;
+}
+
+.video-title {
+  float: left;
+}
+
 #remote-video {
+  width: 100%;
   max-width: 100%;
 }
 
 #local-video {
-  position: relative;
-  left: 0;
+  position: absolute;
+  right: 0;
+  bottom: 8%;
   max-width: 150px;
 }
 
@@ -16,6 +26,8 @@
   .joystick {
     position: relative;
     background-color: black;
+    margin: 0px auto;
+    margin-bottom: 20px;
     .joystick-point {
       position: absolute;
       height: 10px;

@@ -3,6 +3,52 @@
 <!-- row -->
 <div class="row">
   <div class="col-lg-12">
+    <h1 class="page-header">
+      Controller <small>Control Your Plurry</small>
+    </h1>
+    <div class="controllers">
+      <div class="video col-lg-6">
+        <div class="remote">
+          <input type="hidden" id="caller-id" size="15">
+          <!--
+          <button id="connect">Connect</button>
+          -->
+          <h4 class="video-title">상대 영상</h4>
+          <button id="client_btn" class="ui-btn ui-btn-inline">연결하기</button>
+          <button id="dial" class="ui-btn ui-btn-inline" style="display:none;">Station에 접속하기</button>
+          <video id="remote-video" autoplay></video>
+          <div class="local">
+            <input type="hidden" id="recipient-id" value="station">
+            <video id="local-video" class="col-lg-4" autoplay></video>
+          </div>
+        </div>
+        <div id="video-messages">
+        </div>
+      </div>
+      <div class="joystick col-lg-6">
+        <div class="joystick-limit">
+          <div id="joystick" class="joystick" data-code="<%= current_user.groups.first.products.first.product_id %>" ></div>
+        </div>
+        <p>
+          <label for="amount">밥 줄 정도 :</label>
+          <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+        </p>
+        <div id="feed-slider"></div>
+        <div class="feed-button">밥주기</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <h1 class="page-header">
+    </h1>
+
+    <div id="dialler" data-active="false">
+      
+      
+    </div>
+  </div>
+  <div class="col-lg-12">
     <% @group.products.each_with_index do |p, i| %>
     <div class="col-lg-6">
       <h3 class="page-header">
@@ -53,59 +99,6 @@
     </script>
     <% end %>
   </div>
-
-  <div class="col-lg-6">
-    <h1 class="page-header">
-      Feed <small>My Hungry Pet</small>
-    </h1>
-    <p>
-      <label for="amount">밥 줄 정도 :</label>
-      <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
-    </p>
-    <h3>밥 줄 정도를 정해주세요.</h3>
-    <div id="feed-slider"></div>
-    <div class="feed-button">밥주기</div>
-  </div>
-
-  <div class="col-lg-6">
-    <h1 class="page-header">
-      Joystick <small>websocket</small>
-    </h1>
-    <h3>딜레이를 입력 후에 엔터를 눌러주세요(기본 값은 200(0.2s)</h3>
-    <input type="number" max="2000" min="200" id="joystick-delay" value="200">
-    <div class="joystick-delay-message"></div>
-    <div class="joystick-limit">
-      <div id="joystick" class="joystick" data-code="<%= current_user.groups.first.products.first.product_id %>" ></div>
-    </div>
-  </div>
-
-  <div class="col-lg-6">
-    <h1 class="page-header">
-      Video Calling <small>Lovely My Pet</small>
-    </h1>
-    <div id="credentials">
-      <input type="hidden" id="caller-id" size="15">
-      <!--
-      <button id="connect">Connect</button>
-      -->
-      <button id="client_btn" class="ui-btn ui-btn-inline">연결하기</button>
-      <button id="dial" class="ui-btn ui-btn-inline" style="display:none;">Station에 접속하기</button>
-    </div>
-
-    <div id="dialler" data-active="false">
-      <input type="hidden" id="recipient-id" value="station">
-      <div class="remote">
-        <h1>상대 영상</h1>
-        <video id="remote-video" autoplay></video>
-      </div>
-      <div class="local">
-        <h1>내 영상</h1>
-        <video id="local-video" autoplay></video>
-      </div>
-      <div id="messages">
-      </div>
-    </div>
-  </div>
 </div>
 <!-- /.row -->
 <!-- /.container-fluid -->
@@ -133,10 +126,10 @@
       max: 9,
       value: 1,
       slide: function( event, ui ) {
-        $("#amount").val(ui.value);
+        $("#amount").val(ui.value + " (최소 1 ~ 최대 9)");
       }
     });
-    $("#amount").val($("#feed-slider").slider("value"));
+    $("#amount").val($("#feed-slider").slider("value") + " (최소 1 ~ 최대 9)");
     //밥주기 이벤트
     $(".feed-button").click(function() {
       ws_1.send('{"cmd" : 6, "amount" : ' + $("#feed-slider").slider("value") + '}');
@@ -149,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var SERVER_PORT = 3003;
 
   // DOM elements manipulated as user interacts with the app
-  var messageBox = document.querySelector('#messages');
+  var messageBox = document.querySelector('#video-messages');
   var callerIdEntry = document.querySelector('#caller-id');
   var connectBtn = document.querySelector('#connect');
   var recipientIdEntry = document.querySelector('#recipient-id');
