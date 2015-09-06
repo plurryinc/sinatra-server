@@ -1,3 +1,4 @@
+<% unless @group.products.where(product_type: 1).take.nil? %>
 <div class="container-fluid">
 <!-- Page Heading -->
 <!-- row -->
@@ -184,3 +185,4 @@
     });
   });
 </script>
+<% end %>

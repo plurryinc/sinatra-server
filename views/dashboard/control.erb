@@ -8,6 +8,7 @@
     </h1>
     <div class="controllers">
       <div class="video col-lg-6">
+        <% #unless @type3.nil? %>
         <div class="remote">
           <input type="hidden" id="caller-id" size="15">
           <!--
@@ -24,6 +25,7 @@
         </div>
         <div id="video-messages">
         </div>
+        <% #end %>
       </div>
       <div class="control col-lg-6">
         <% unless @type2.nil? %>
