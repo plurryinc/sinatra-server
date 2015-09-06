@@ -10,6 +10,10 @@ class DashboardController < ApplicationController
 
   get '/control/:name' do
     @group = Group.where(name: params[:name]).take
+    products = @group.products
+    @type1 = products.where(product_type: 1).take
+    @type2 = products.where(product_type: 2).take
+    @type3 = products.where(product_type: 3).take
     erb :'dashboard/control', { :layout => :'layouts/dashboard' }
   end
 

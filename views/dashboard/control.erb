@@ -25,16 +25,20 @@
         <div id="video-messages">
         </div>
       </div>
-      <div class="joystick col-lg-6">
+      <div class="control col-lg-6">
+        <% unless @type2.nil? %>
         <div class="joystick-limit">
           <div id="joystick" class="joystick" data-code="<%= current_user.groups.first.products.first.product_id %>" ></div>
         </div>
+        <% end %>
+        <% unless @type1.nil? %>
         <p>
           <label for="amount">밥 줄 정도 :</label>
           <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
         </p>
         <div id="feed-slider"></div>
         <div class="feed-button">밥주기</div>
+        <% end %>
       </div>
     </div>
   </div>
@@ -44,8 +48,6 @@
     </h1>
 
     <div id="dialler" data-active="false">
-      
-      
     </div>
   </div>
   <div class="col-lg-12">
