@@ -1,5 +1,5 @@
 class MobileAuthenticationController < ApplicationController
-  post '/sign_in' do
+  get '/sign_in' do
     email = params[:email]
     password = params[:password]
 
@@ -17,7 +17,7 @@ class MobileAuthenticationController < ApplicationController
         return JSON.parse({ result: "success", what: "sign_in", cache_token: secret_token }.to_json)
       end
     else
-        return { result: "fail", what: "sign_in" }
+      return { result: "fail", what: "sign_in" }.to_s.to_json
     end
   end
 
