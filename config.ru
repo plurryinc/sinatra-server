@@ -13,5 +13,7 @@ use Sass::Plugin::Rack
 
 map('/ws') { run WebsocketController }
 map('/dashboard') { run DashboardController }
+map('/mobile/users') { run MobileAuthenticationController }
+map('/mobile') { run MobileMainController }
 map('/users') { run AuthenticationController }
 map('/') { run HomeController }

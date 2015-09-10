@@ -24,4 +24,16 @@ class ApplicationController < Sinatra::Base
       redirect '/users/sign_in'
     end
   end
+
+  def m_user_signed_in?
+    !session[:mobile_secret_token].nil?
+  end
+
+  def m_current_user
+    User.where(mobile_secret_token: session[:mobile_secret_token]).take
+  end
+
+  def authenticate_token! token
+    session[:mobile_secret_token] = token
+  end
 end

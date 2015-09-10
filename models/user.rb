@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
     email = params[:email]
     password = params[:password]
     password_confirmation = params[:password_confirmation]
+    return { result: "fail", data: "잘못된 파라메터입니디." }if email.nil? or password.nil? or password_confirmation.nil?
     return { result: "fail", data: "이미 존재하는 이메일입니다." } if User.where(email: email).take
 
     #패스워드, 패스워드 확인이 같을 경우

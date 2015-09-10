@@ -49,12 +49,13 @@ ActiveRecord::Schema.define(version: 20150901093431) do
   add_index "products", ["product_id"], name: "index_products_on_product_id", unique: true
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",              null: false
-    t.string   "encrypted_password", null: false
+    t.string   "email",               null: false
+    t.string   "encrypted_password",  null: false
     t.string   "salt"
+    t.string   "mobile_secret_token"
     t.text     "options"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
   end
 
 end

@@ -6,6 +6,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string  :email,              null: false
       t.string  :encrypted_password, null: false
       t.string  :salt
+      t.string  :mobile_secret_token
       t.text    :options
 
       t.timestamps null: false

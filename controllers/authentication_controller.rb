@@ -23,7 +23,7 @@ class AuthenticationController < ApplicationController
 
   post '/sign_in' do
     email = params[:email]
-    user = User.where(email: params[:email]).take
+    user = User.where(email: email).take
 
     if !user.nil? and user.encrypted_password == BCrypt::Engine.hash_secret(params[:password], user.salt)
       session[:user_id] = user.id
