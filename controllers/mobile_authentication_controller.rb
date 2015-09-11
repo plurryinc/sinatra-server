@@ -8,9 +8,9 @@ class MobileAuthenticationController < ApplicationController
     user = User.where(mobile_secret_token: token).take
     unless user.nil?
       authenticate_token! user.mobile_secret_token
-      return { result: "success", what: "login_token" }.to_json
+      return { result: "success", what: "sign_in_token" }.to_json
     else
-      return { result: "fail", what: "login_token" }.to_json
+      return { result: "fail", what: "sign_in_token" }.to_json
     end
   end
 
