@@ -21,4 +21,24 @@ class MobileMainController < ApplicationController
       data: group_list
     }.to_json
   end
+
+  post '/:group/products' do
+    group = m_current_user.groups.where(name: params[:group]).take
+    return { result: "fail", what: "products" }.to_json if group.nil?
+    products = group.products
+    products_list = []
+    products.each do |p|
+      products_list.push({
+        product_id: p.product_id,
+        product_secret_token: p.secret_token,
+        product_type: p.product_type,
+        schedule: p.schedule
+      })
+    end
+    return {
+      result: "success",
+      what: "products",
+      data: products_list
+    }.to_json
+  end
 end
