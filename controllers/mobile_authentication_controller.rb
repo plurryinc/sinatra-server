@@ -3,6 +3,17 @@ class MobileAuthenticationController < ApplicationController
     content_type :json
   end
 
+  post '/sign_in_token' do
+    token = params[:secret_token]
+    user = User.where(mobile_secret_token: token).take
+    unless user.nil?
+      authenticate_token! user.mobile_secret_token
+      return { result: "success", what: "login_token" }.to_json
+    else
+      return { result: "fail", what: "login_token" }.to_json
+    end
+  end
+
   post '/sign_in' do
     email = params[:email]
     password = params[:password]
