@@ -11,4 +11,17 @@ class MobileMainController < ApplicationController
       end
     end
   end
+
+  post '/group' do
+    groups = m_current_user.groups
+    group_list = []
+    groups.each do |g|
+      group_list.push(g.name)
+    end
+    return {
+      result: "success",
+      what: "groups",
+      data: group_list
+    }.to_json
+  end
 end
