@@ -9,7 +9,7 @@ class MobileMainController < ApplicationController
     end
   end
 
-  post '/group' do
+  post '/groups' do
     groups = m_current_user.groups
     group_list = []
     groups.each do |g|
