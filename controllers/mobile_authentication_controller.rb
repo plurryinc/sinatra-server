@@ -51,8 +51,10 @@ class MobileAuthenticationController < ApplicationController
   end
 
   post '/sign_out' do
-    unless session[:mobile_secret_token].nil?
-      m_current_user.update(mobile_secret_token: nil)
+    token = params[:secret_token]
+    unless token.nil?
+      user = User.where(mobile_secret_token: token).take
+      user.update(mobile_secret_token: nil)
       session[:mobile_secret_token] = nil
       return { result: "success", what: "logout" }.to_json
     else
