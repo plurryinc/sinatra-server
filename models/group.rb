@@ -45,6 +45,18 @@ class Group < ActiveRecord::Base
     end
   end
 
+  def m_update_product products
+    products.each do |product|
+      p = Product.where(group_id: nil, code: product).take
+      unless p.nil?
+        if has_type_n? p.product_type
+          self.products.where(product_type: p.product_type).take.update(group_id: nil)
+          p.update(group_id: id)
+        end
+      end
+    end
+  end
+
   def has_type_n? n
     products.each do |product|
       return true if product.product_type == n

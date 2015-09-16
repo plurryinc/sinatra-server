@@ -67,7 +67,7 @@ class MobileMainController < ApplicationController
   post '/:name/update' do
     group = Group.where(name: params[:name]).take
     group.update(name: params[:group]) unless params[:group].strip == ""
-    group.update_product(params[:products]) unless params[:products].empty?
+    group.m_update_product(params[:products]) unless params[:products].empty?
     return { result: "success", what: "product update" }.to_json
   end
 end
