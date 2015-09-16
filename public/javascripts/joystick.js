@@ -35,8 +35,8 @@ var makeJoystick = function(selector, sqhw) {
     start: function() {
       clearInterval(websocketInterval);
       websocketInterval = setInterval(function() {
-        ws_1.send('{"cmd" : 8, "speed" : ' + vec.left + '}');
-        ws_1.send('{"cmd" : 9, "speed" : ' + vec.right + '}');
+        ws_2.send('{"cmd" : 8, "speed" : ' + vec.left + '}');
+        ws_2.send('{"cmd" : 9, "speed" : ' + vec.right + '}');
       }, websocketDelay);
     },
     containment: "parent",
@@ -82,8 +82,8 @@ var makeJoystick = function(selector, sqhw) {
         clearInterval(websocketInterval);
         vec.left = 0;
         vec.right = 0;
-        ws_1.send('{"cmd" : 8, "speed" : ' + vec.left + '}');
-        ws_1.send('{"cmd" : 9, "speed" : ' + vec.right + '}');
+        ws_2.send('{"cmd" : 8, "speed" : ' + vec.left + '}');
+        ws_2.send('{"cmd" : 9, "speed" : ' + vec.right + '}');
       });
 
       var returnInterval = setInterval(function() {
