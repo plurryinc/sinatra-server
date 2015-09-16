@@ -51,8 +51,8 @@ class Group < ActiveRecord::Base
       unless p.nil?
         if has_type_n? p.product_type
           self.products.where(product_type: p.product_type).take.update(group_id: nil)
-          p.update(group_id: id)
         end
+        p.update(group_id: id)
       end
     end
   end
