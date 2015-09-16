@@ -29,6 +29,7 @@ class MobileMainController < ApplicationController
     products_list = []
     products.each do |p|
       products_list.push({
+        code: p.code,
         product_id: p.product_id,
         product_secret_token: p.secret_token,
         product_type: p.product_type,
@@ -40,5 +41,33 @@ class MobileMainController < ApplicationController
       what: "products",
       data: products_list
     }.to_json
+  end
+  
+  post '/new' do
+    if params[:group].nil? && params[:products].empty?
+      return {
+        result: "fail",
+        what: "registration"
+      }.to_json
+    end
+    result = Group.create_group(m_current_user.id, params)
+    if result
+      return {
+        result: "success",
+        what: "registration"
+      }.to_json
+    else
+      return {
+        result: "fail",
+        what: "registration"
+      }.to_json
+    end
+  end
+
+  post '/:name/update' do
+    group = Group.where(name: params[:name]).take
+    group.update(name: params[:group]) unless params[:group].strip == ""
+    group.update_product(params[:products]) unless params[:products].empty?
+    return { result: "success", what: "product update" }.to_json
   end
 end
