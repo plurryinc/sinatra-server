@@ -111,20 +111,36 @@
       show_debug_feed(Date() + ': ' +  m.data);
       if(m.data.indexOf("rs") != -1) {
         var schedule = JSON.parse(m.data);
-        if(schedule.errcode == 0) {
-          var status = schedule.timestamp == 0
-          scheduleArray.push({
-            id: schedule.nid,
-            status: status,
-            time: secondToStringTime(schedule.timestamp),
-            amount: schedule.amount
-          });
-          if(scheduleArray.length == 20) {
-            scheduleTable.bootstrapTable('append', timeSort(scheduleArray));
-            scheduleTable.bootstrapTable('hideLoading');
+        if(schedule.rs == 104) {
+          data = scheduleTable.bootstrapTable('getData');
+          for(var i = 0; i < data.length; i++) {
+            if(data[i].id == schedule.nid) {
+              data[i].status = schedule.timestamp == 0;
+              data[i].time = secondToStringTime(schedule.timestamp);
+              data[i].amount = schedule.amount;
+              data = timeSort(data);
+              break;
+            }
           }
-        } else {
-          ws_feed.send('{ "cmd": 3, "id": ' + schedule.nid + '}')
+          for(var i = 0;i < data.length; i++) {
+            scheduleTable.bootstrapTable('updateRow', { index: i, row: { id: data[i].id, status: data[i].status, time: data[i].time, amount: data[i].amount } });
+          }
+        } else if(schedule.rs == 103) {
+          if(schedule.errcode == 0) {
+            var status = schedule.timestamp == 0
+            scheduleArray.push({
+              id: schedule.nid,
+              status: status,
+              time: secondToStringTime(schedule.timestamp),
+              amount: schedule.amount
+            });
+            if(scheduleArray.length == 20) {
+              scheduleTable.bootstrapTable('append', timeSort(scheduleArray));
+              scheduleTable.bootstrapTable('hideLoading');
+            }
+          } else {
+            ws_feed.send('{ "cmd": 3, "id": ' + schedule.nid + '}')
+          }
         }
       }
     };
@@ -167,16 +183,11 @@
         }
       for(var i = 0; i < All.length; i++) {
         if(All[i].status == true) {
-          All[i].status = false;
-          All[i].time = time;
-          All[i].amount = amount;
-          ws_feed.send('{ "cmd": 4, "id": ' + All[i].id + ', "timestamp": ' + stringToSecondTime(time) + ', "amount": ' + amount + '}');
-          All = timeSort(All);
+          secTime = stringToSecondTime(time)
+          if(secTime % 60 == 0)
+            ws_feed.send('{ "cmd": 4, "id": ' + All[i].id + ', "timestamp": ' + stringToSecondTime(time) + ', "amount": ' + amount + '}');
           break;
         }
-      }
-      for(var i = 0; i < All.length; i++) {
-        scheduleTable.bootstrapTable('updateRow', { index: i, row: { status: All[i].status, time: All[i].time, amount: All[i].amount } });
       }
     });
 
@@ -187,10 +198,7 @@
         values.push(row.id);
         ws_feed.send('{ "cmd": 4, "id": ' + row.id + ', "timestamp": 0, "amount": 0 }');
       });
-      scheduleTable.bootstrapTable('remove', { field: "id", values: values });
-      $.each(values, function(index, val) {
-        scheduleTable.bootstrapTable('append', { id: val, status: true, time: "empty", amount: 0 });
-      });
+      scheduleTable.bootstrapTable('uncheckAll');
     });
     window.onbeforeunload = function() {
       var scheduleData = scheduleTable.bootstrapTable('getData');

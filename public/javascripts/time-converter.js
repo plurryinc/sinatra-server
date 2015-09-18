@@ -11,6 +11,7 @@ function stringToSecondTime(str) {
 function secondToStringTime(sec) {
   if(typeof(sec) != "number") return;
   if(sec == 0) return "empty"
+  sec = sec - (sec % 60);
   var h = Math.floor(sec / 3600);
   var m = Math.floor(sec % 3600 / 60);
   var meridian = sec >= 3600 * 12 ? "PM" : "AM";
