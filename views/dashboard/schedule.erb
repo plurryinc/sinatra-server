@@ -60,39 +60,6 @@
       <input type="text" id="debug_input_<%=p.id%>" placeholder="send a test command">
       <div id="debug_msgs_<%=p.id%>" style="height:200px;overflow:scroll;"></div>
     </div>
-    <script type="text/javascript">
-      $(document).ready(function(){
-        //cmd javascript
-        function show_<%=p.id%>(msg) {
-          $("#msgs_<%=p.id%>").prepend(msg+'<br>');
-        }
-        ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/<%=p.product_id%>');
-        ws_<%=p.id%>.onopen    = function()  { show_<%=p.id%>('websocket opened'); };
-        ws_<%=p.id%>.onclose   = function()  { show_<%=p.id%>('websocket closed'); }
-        ws_<%=p.id%>.onmessage = function(m) { show_<%=p.id%>(Date() + ': ' +  m.data); };
-        $("#input_<%=p.id%>").keypress(function(e) {
-          if (e.which == 13) {
-            ws_<%=p.id%>.send($(this).val());
-            $(this).val("");
-          }
-        });
-
-        //debug javascript
-        function show_debug_<%=p.id%>(msg) {
-          $("#debug_msgs_<%=p.id%>").prepend(msg+'<br>');
-        }
-        debug_ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/debug/<%=p.product_id%>');
-        debug_ws_<%=p.id%>.onopen    = function()  { show_debug_<%=p.id%>('websocket opened'); };
-        debug_ws_<%=p.id%>.onclose   = function()  { show_debug_<%=p.id%>('websocket closed'); }
-        debug_ws_<%=p.id%>.onmessage = function(m) { show_debug_<%=p.id%>(Date() + ': ' +  m.data); };
-        $("#debug_input_<%=p.id%>").keypress(function(e) {
-          if (e.which == 13) {
-            debug_ws_<%=p.id%>.send($(this).val());
-            $(this).val("");
-          }
-        });
-      });
-    </script>
     <% end %>
   </div>
 </div>
@@ -101,45 +68,71 @@
 
 <script>
   $(document).ready(function() {
-    var json_data = [];
-    var $timepicker = $('#schedule-timepicker').timepicker();
-
-    function stringToSecondTime(str) {
-      var arr = str.split(':');
-      var hours = parseInt(arr[0]) % 12;
-      var minutes = parseInt(arr[1].split(' ')[0]);
-      var meridian = arr[1].split(' ')[1];
-      if( meridian == "PM" ) hours += 12;
-      return (3600 * hours) + (minutes * 60);
+    var scheduleArray = [];
+    var scheduleTable = $('table').bootstrapTable();
+    //cmd javascript
+    <% @group.products.where(product_type: 1).each_with_index do |p, i| %>
+    function show_<%=p.id%>(msg) {
+      $("#msgs_<%=p.id%>").prepend(msg+'<br>');
     }
+    //ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/<%=p.product_id%>');
+    ws_<%=p.id%> = new WebSocket('ws://plurry.cycorld.com:3000/ws/' + '<%=p.product_id%>');
+    ws_<%=p.id%>.onopen    = function()  {
+      show_<%=p.id%>('websocket opened'); 
+      scheduleTable.bootstrapTable('showLoading');
+      for(var i = 0; i < 20; i++) {
+        ws_<%=p.id %>.send('{ "cmd": 3, "id": ' + i + '}');
+      }
+    };
+    ws_<%=p.id%>.onclose   = function()  { show_<%=p.id%>('websocket closed'); }
+    ws_<%=p.id%>.onmessage = function(m) { show_<%=p.id%>(Date() + ': ' +  m.data); };
+    $("#input_<%=p.id%>").keypress(function(e) {
+      if (e.which == 13) {
+        ws_<%=p.id%>.send($(this).val());
+        $(this).val("");
+      }
+    });
 
-    function secondToStringTime(sec) {
-      if(typeof(sec) != "number") return;
-      var h = Math.floor(sec / 3600);
-      var m = Math.floor(sec % 3600 / 60);
-      var meridian = sec >= 3600 * 12 ? "PM" : "AM";
-      if(meridian == "PM") {
-        if(h == 24) {
-          meridian = "AM";
-        }else if(h > 12) {
-          h -= 12;
+    //debug javascript
+    function show_debug_<%=p.id%>(msg) {
+      $("#debug_msgs_<%=p.id%>").prepend(msg+'<br>');
+    }
+    //debug_ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/debug/<%=p.product_id%>');
+    debug_ws_<%=p.id%> = new WebSocket('ws://plurry.cycorld.com:3000/ws/' + 'debug/<%=p.product_id%>');
+    debug_ws_<%=p.id%>.onopen    = function()  { show_debug_<%=p.id%>('websocket opened'); };
+    debug_ws_<%=p.id%>.onclose   = function()  { show_debug_<%=p.id%>('websocket closed'); }
+    debug_ws_<%=p.id%>.onmessage = function(m) { 
+      show_debug_<%=p.id%>(Date() + ': ' +  m.data);
+      if(m.data.indexOf("rs") != -1) {
+        var schedule = JSON.parse(m.data);
+        if(schedule.errcode == 0) {
+          var status = schedule.timestamp == 0
+          scheduleArray.push({
+            id: schedule.nid,
+            status: status,
+            time: secondToStringTime(schedule.timestamp),
+            amount: schedule.amount
+          });
+          if(scheduleArray.length == 20) {
+            console.log(scheduleArray);
+            scheduleTable.bootstrapTable('append', scheduleArray);
+            scheduleTable.bootstrapTable('hideLoading');
+          }
+        } else {
+          ws_<%= p.id %>.send('{ "cmd": 3, "id": ' + schedule.nid + '}')
         }
       }
-      return ((h < 10 ? "0" : "") + (h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + " " + meridian );
-    }
+    };
 
-    for(var i = 0; i < 20; i++) {
-      json_data.push({
-        id: i,
-        status: true,
-        time: null,
-        amount: null
-      });
-    }
-
-    var scheduleTable = $('table').bootstrapTable({
-      data: json_data
+    $("#debug_input_<%=p.id%>").keypress(function(e) {
+      if (e.which == 13) {
+        debug_ws_<%=p.id%>.send($(this).val());
+        $(this).val("");
+      }
     });
+    <% end %>
+    var $timepicker = $('#schedule-timepicker').timepicker();
+
     //스케쥴 슬라이더
     $("#schedule-feed-slider").slider({
       range: "max",

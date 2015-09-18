@@ -74,7 +74,8 @@
         function show_<%=p.id%>(msg) {
           $("#msgs_<%=p.id%>").prepend(msg+'<br>');
         }
-        ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/<%=p.product_id%>');
+        //ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/<%=p.product_id%>');
+        ws_<%=p.id%> = new WebSocket('ws://plurry.cycorld.com:3000/ws/' + '<%=p.product_id%>');
         ws_<%=p.id%>.onopen    = function()  { show_<%=p.id%>('websocket opened'); };
         ws_<%=p.id%>.onclose   = function()  { show_<%=p.id%>('websocket closed'); }
         ws_<%=p.id%>.onmessage = function(m) { show_<%=p.id%>(Date() + ': ' +  m.data); };
@@ -89,7 +90,8 @@
         function show_debug_<%=p.id%>(msg) {
           $("#debug_msgs_<%=p.id%>").prepend(msg+'<br>');
         }
-        debug_ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/debug/<%=p.product_id%>');
+        //debug_ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/debug/<%=p.product_id%>');
+        debug_ws_<%=p.id%> = new WebSocket('ws://plurry.cycorld.com:3000/ws/' + 'debug/<%=p.product_id%>');
         debug_ws_<%=p.id%>.onopen    = function()  { show_debug_<%=p.id%>('websocket opened'); };
         debug_ws_<%=p.id%>.onclose   = function()  { show_debug_<%=p.id%>('websocket closed'); }
         debug_ws_<%=p.id%>.onmessage = function(m) { show_debug_<%=p.id%>(Date() + ': ' +  m.data); };
@@ -110,7 +112,7 @@
 <script>
   $(document).ready(function() {
     var $inputDelay = $('#joystick-delay');
-    var joystick = new makeJoystick('#joystick', 160)
+    var joystick = new makeJoystick('#joystick', 180)
     //인풋 이벤트(엔터 시에 발동)
     $inputDelay.change(function() {
       var value = $(this).val();
