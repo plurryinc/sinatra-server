@@ -22,8 +22,14 @@ class DashboardController < ApplicationController
   end
 
   get '/schedule/:name' do
-    @group = Group.where(name: params[:name]).take
+    group = Group.where(name: params[:name]).take
+    @product = group.products.where(product_type: 1).take
     erb :'dashboard/schedule', { :layout => :'layouts/dashboard' }
+  end
+
+  post '/:hash/schedule' do
+    product = Product.where(product_id: params[:hash]).take
+    product.update(schedule: JSON.parse(params[:schedule]))
   end
 
   get '/registration' do

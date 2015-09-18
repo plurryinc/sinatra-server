@@ -1,4 +1,4 @@
-<% unless @group.products.where(product_type: 1).take.nil? %>
+<% unless @product.nil? %>
 <div class="container-fluid">
 <!-- Page Heading -->
 <!-- row -->
@@ -31,7 +31,7 @@
       <h1 class="page-header">
         Schedule List <small>Pet Feed Time</small>
       </h1>
-      <table data-sort-name="id" data-height="200" data-click-to-select="true">
+      <table data-height="200" data-click-to-select="true">
         <thead>
           <tr>
             <th data-field="state" data-checkbox="true"></th>
@@ -45,22 +45,20 @@
     </div>
   </div>
   <div class="col-lg-12">
-    <% @group.products.where(product_type: 1).each_with_index do |p, i| %>
     <div class="col-lg-6">
       <h3 class="page-header">
-        CMD(<%= i %>) <small><%=p.product_id%></small>
+        CMD <small><%=@product.product_id%></small>
       </h3>
-      <input type="text" id="input_<%=p.id%>" placeholder="send a test command">
-      <div id="msgs_<%=p.id%>" style="height:200px;overflow:scroll;"></div>
+      <input type="text" id="input_feed" placeholder="send a test command">
+      <div id="msgs_feed" style="height:200px;overflow:scroll;"></div>
     </div>
     <div class="col-lg-6">
       <h3 class="page-header">
-        Debugger(<%= i %>) <small><%=p.product_id%></small>
+        Debugger <small><%=@product.product_id%></small>
       </h3>
-      <input type="text" id="debug_input_<%=p.id%>" placeholder="send a test command">
-      <div id="debug_msgs_<%=p.id%>" style="height:200px;overflow:scroll;"></div>
+      <input type="text" id="debug_input_feed" placeholder="send a test command">
+      <div id="debug_msgs_feed" style="height:200px;overflow:scroll;"></div>
     </div>
-    <% end %>
   </div>
 </div>
 <!-- /.row -->
@@ -70,67 +68,58 @@
   $(document).ready(function() {
     var scheduleArray = [];
     var scheduleTable = $('table').bootstrapTable();
+    //scheduleTable.bootstrapTable('hideColumn', 'id');
     //cmd javascript
-    <% @group.products.where(product_type: 1).each_with_index do |p, i| %>
-    function show_<%=p.id%>(msg) {
-      $("#msgs_<%=p.id%>").prepend(msg+'<br>');
+    function show_feed(msg) {
+      $("#msgs_feed").prepend(msg+'<br>');
     }
-    //ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/<%=p.product_id%>');
-    ws_<%=p.id%> = new WebSocket('ws://plurry.cycorld.com:3000/ws/' + '<%=p.product_id%>');
-    ws_<%=p.id%>.onopen    = function()  {
-      show_<%=p.id%>('websocket opened'); 
+    //ws_feed = new WebSocket('ws://' + window.location.host + '/ws/<%=@product.product_id%>');
+    ws_feed = new WebSocket('ws://plurry.cycorld.com:3000/ws/' + '<%=@product.product_id%>');
+    ws_feed.onopen    = function()  {
+      show_feed('websocket opened'); 
       scheduleTable.bootstrapTable('showLoading');
-      for(var i = 0; i < 20; i++) {
-        ws_<%=p.id %>.send('{ "cmd": 3, "id": ' + i + '}');
+      for(var i = 0; i < 20;i++) {
+        ws_feed.send('{"cmd": 3, "id":' + i + '}');
       }
+      <% @product.schedule.each do |schedule| %>
+      scheduleArray.push({
+        id: <%= schedule["id"] %>,
+        status: <%= schedule["status"] %>,
+        time: "<%= schedule["time"] %>",
+        amount: <%= schedule["amount"] %>
+      });
+      <% end %>
+      scheduleTable.bootstrapTable('append', scheduleArray);
+      scheduleTable.bootstrapTable('hideLoading');
+      /*
+      ws_feed.send('{ "cmd": 3, "id": ' + i + '}');
+      */
     };
-    ws_<%=p.id%>.onclose   = function()  { show_<%=p.id%>('websocket closed'); }
-    ws_<%=p.id%>.onmessage = function(m) { show_<%=p.id%>(Date() + ': ' +  m.data); };
-    $("#input_<%=p.id%>").keypress(function(e) {
+    ws_feed.onclose   = function()  { show_feed('websocket closed'); }
+    ws_feed.onmessage = function(m) { show_feed(Date() + ': ' +  m.data); };
+    $("#input_feed").keypress(function(e) {
       if (e.which == 13) {
-        ws_<%=p.id%>.send($(this).val());
+        ws_feed.send($(this).val());
         $(this).val("");
       }
     });
 
     //debug javascript
-    function show_debug_<%=p.id%>(msg) {
-      $("#debug_msgs_<%=p.id%>").prepend(msg+'<br>');
+    function show_debug_feed(msg) {
+      $("#debug_msgs_feed").prepend(msg+'<br>');
     }
-    //debug_ws_<%=p.id%> = new WebSocket('ws://' + window.location.host + '/ws/debug/<%=p.product_id%>');
-    debug_ws_<%=p.id%> = new WebSocket('ws://plurry.cycorld.com:3000/ws/' + 'debug/<%=p.product_id%>');
-    debug_ws_<%=p.id%>.onopen    = function()  { show_debug_<%=p.id%>('websocket opened'); };
-    debug_ws_<%=p.id%>.onclose   = function()  { show_debug_<%=p.id%>('websocket closed'); }
-    debug_ws_<%=p.id%>.onmessage = function(m) { 
-      show_debug_<%=p.id%>(Date() + ': ' +  m.data);
-      if(m.data.indexOf("rs") != -1) {
-        var schedule = JSON.parse(m.data);
-        if(schedule.errcode == 0) {
-          var status = schedule.timestamp == 0
-          scheduleArray.push({
-            id: schedule.nid,
-            status: status,
-            time: secondToStringTime(schedule.timestamp),
-            amount: schedule.amount
-          });
-          if(scheduleArray.length == 20) {
-            console.log(scheduleArray);
-            scheduleTable.bootstrapTable('append', scheduleArray);
-            scheduleTable.bootstrapTable('hideLoading');
-          }
-        } else {
-          ws_<%= p.id %>.send('{ "cmd": 3, "id": ' + schedule.nid + '}')
-        }
-      }
-    };
+    //debug_ws_feed = new WebSocket('ws://' + window.location.host + '/ws/debug/<%=@product.product_id%>');
+    debug_ws_feed = new WebSocket('ws://plurry.cycorld.com:3000/ws/' + 'debug/<%=@product.product_id%>');
+    debug_ws_feed.onopen    = function()  { show_debug_feed('websocket opened'); };
+    debug_ws_feed.onclose   = function()  { show_debug_feed('websocket closed'); };
+    debug_ws_feed.onmessage = function(m) { show_debug_feed(Date() + ': ' +  m.data); };
 
-    $("#debug_input_<%=p.id%>").keypress(function(e) {
+    $("#debug_input_feed").keypress(function(e) {
       if (e.which == 13) {
-        debug_ws_<%=p.id%>.send($(this).val());
+        debug_ws_feed.send($(this).val());
         $(this).val("");
       }
     });
-    <% end %>
     var $timepicker = $('#schedule-timepicker').timepicker();
 
     //스케쥴 슬라이더
@@ -154,12 +143,25 @@
       var time = $timepicker.data('timepicker').getTime();
       var amount = $("#schedule-feed-slider").slider("value");
       var All = scheduleTable.bootstrapTable('getData');
+      for(var i = 0; i < All.length; i++) 
+        if(All[i].time == time) {
+          All[i].status = true;
+          All[i].time = "empty";
+          All[i].amount = 0;
+          ws_feed.send('{ "cmd": 4, "id": ' + All[i].id + ', "timestamp": 0, "amount": 0 }');
+        }
       for(var i = 0; i < All.length; i++) {
         if(All[i].status == true) {
-          scheduleTable.bootstrapTable('updateRow', { index: All[i].id, row: { status: false, time: time, amount: amount } });
-          ws_1.send('{ "cmd": 4, "id": ' + All[i].id + ', "timestamp": ' + stringToSecondTime(time) + ', "amount": ' + amount + '}');
+          All[i].status = false;
+          All[i].time = time;
+          All[i].amount = amount;
+          ws_feed.send('{ "cmd": 4, "id": ' + All[i].id + ', "timestamp": ' + stringToSecondTime(time) + ', "amount": ' + amount + '}');
+          All = timeSort(All);
           break;
         }
+      }
+      for(var i = 0; i < All.length; i++) {
+        scheduleTable.bootstrapTable('updateRow', { index: i, row: { status: All[i].status, time: All[i].time, amount: All[i].amount } });
       }
     });
 
@@ -168,14 +170,18 @@
       var values = [];
       $.each(selectArray, function(index, row) {
         values.push(row.id);
+        ws_feed.send('{ "cmd": 4, "id": ' + row.id + ', "timestamp": 0, "amount": 0 }');
       });
       scheduleTable.bootstrapTable('remove', { field: "id", values: values });
       $.each(values, function(index, val) {
-        scheduleTable.bootstrapTable('append', { id: val, status: true, time: null, amount: null });
-      })
-      //강제 새로고침
-      scheduleTable.bootstrapTable('updateRow', {index: 1, row: {} });
+        scheduleTable.bootstrapTable('append', { id: val, status: true, time: "empty", amount: 0 });
+      });
     });
+    window.onbeforeunload = function() {
+      var scheduleData = scheduleTable.bootstrapTable('getData');
+      scheduleData = JSON.stringify(scheduleData);
+      $.post('/dashboard/'+ "<%= @product.product_id %>" + '/schedule', { schedule: scheduleData });
+    };
   });
 </script>
 <% end %>

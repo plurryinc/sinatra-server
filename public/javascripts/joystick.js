@@ -10,6 +10,8 @@ var makeJoystick = function(selector, sqhw) {
 
   var websocketInterval = null;
   var websocketDelay = 500;
+  var maxVelocity = 255;
+  var defaultVelocity = 180;
   var container = $(selector);
   var stick = $('<div class="joystick-base"></div>');
   var circle = $('<div class="joystick-point"></div>');
@@ -92,14 +94,14 @@ var makeJoystick = function(selector, sqhw) {
           vec.right = 0;
         }
       } else if( theta >= 30 && theta < 150 ) {
-        plusX = parseInt(Math.abs(75 * (x / msq).toFixed(2))) * -1;
-        plusY = parseInt(75 * (y / msq).toFixed(2));
+        plusX = parseInt(Math.abs((maxVelocity - defaultVelocity) * (x / msq).toFixed(2))) * -1;
+        plusY = parseInt((maxVelocity - defaultVelocity) * (y / msq).toFixed(2));
         if( x > 0 ) {
-          vec.left = 180 + plusY + plusX
-          vec.right = 180 + plusY
+          vec.left = defaultVelocity + plusY + plusX
+          vec.right = defaultVelocity + plusY
         } else {
-          vec.left = 180 + plusY
-          vec.right = 180 + plusY + plusX
+          vec.left = defaultVelocity + plusY
+          vec.right = defaultVelocity + plusY + plusX
         }
       } else if( theta >= 150 && theta < 210 ) {
         if(Math.abs(x) > (msq / 2)) {
@@ -110,14 +112,14 @@ var makeJoystick = function(selector, sqhw) {
           vec.right = 0;
         }
       } else if( theta >= 210 && theta < 330 ) {
-        plusX = parseInt(Math.abs(75 * (x / msq).toFixed(2)));
-        plusY = parseInt(75 * (y / msq).toFixed(2));
+        plusX = parseInt(Math.abs((maxVelocity - defaultVelocity) * (x / msq).toFixed(2)));
+        plusY = parseInt((maxVelocity - defaultVelocity) * (y / msq).toFixed(2));
         if( x > 0 ) {
-          vec.left = -180 + plusY + plusX
-          vec.right = -180 + plusY
+          vec.left = (defaultVelocity * -1) + plusY + plusX
+          vec.right = (defaultVelocity * -1) + plusY
         } else {
-          vec.left = -180 + plusY
-          vec.right = -180 + plusY + plusX
+          vec.left = (defaultVelocity * -1) + plusY
+          vec.right = (defaultVelocity * -1) + plusY + plusX
         }
       } else {
         vec.left = 0;

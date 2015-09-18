@@ -94,8 +94,8 @@ class WebsocketController < ApplicationController
 
   def is_valid_cmd? string
     begin
-      JSON.parse string
-      return !string["cmd"].nil?
+      json = JSON.parse string
+      return !json["cmd"].nil?
     rescue Exception => e
       return false
     end

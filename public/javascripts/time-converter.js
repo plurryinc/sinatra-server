@@ -23,3 +23,12 @@ function secondToStringTime(sec) {
   }
   return ((h < 10 ? "0" : "") + (h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + " " + meridian );
 }
+
+function timeSort(arr) {
+  arr = arr.sort(function(a,b) {
+    time1 = stringToSecondTime(a.time) == 0 ? 100000 : stringToSecondTime(a.time);
+    time2 = stringToSecondTime(b.time) == 0 ? 100000 : stringToSecondTime(b.time);
+    return parseFloat(time1) - parseFloat(time2);
+  });
+  return arr;
+}
