@@ -78,14 +78,7 @@
     ws_feed.onopen    = function()  {
       show_feed('websocket opened'); 
       scheduleTable.bootstrapTable('showLoading');
-      <% @product.schedule.each do |schedule| %>
-      scheduleArray.push({
-        id: <%= schedule["id"] %>,
-        status: <%= schedule["status"] %>,
-        time: "<%= schedule["time"] %>",
-        amount: <%= schedule["amount"] %>
-      });
-      <% end %>
+      scheduleArray = <%= JSON.generate @product.schedule %>
       if(scheduleArray.length == 20) {
         scheduleTable.bootstrapTable('append', scheduleArray);
         scheduleTable.bootstrapTable('hideLoading');
