@@ -78,9 +78,6 @@
     ws_feed.onopen    = function()  {
       show_feed('websocket opened'); 
       scheduleTable.bootstrapTable('showLoading');
-      for(var i = 0; i < 20;i++) {
-        ws_feed.send('{"cmd": 3, "id":' + i + '}');
-      }
       <% @product.schedule.each do |schedule| %>
       scheduleArray.push({
         id: <%= schedule["id"] %>,
@@ -89,8 +86,13 @@
         amount: <%= schedule["amount"] %>
       });
       <% end %>
-      scheduleTable.bootstrapTable('append', scheduleArray);
-      scheduleTable.bootstrapTable('hideLoading');
+      if(scheduleArray.length == 20) {
+        scheduleTable.bootstrapTable('append', scheduleArray);
+        scheduleTable.bootstrapTable('hideLoading');
+      } else {
+        for(var i = 0; i < 20;i++)
+          ws_feed.send('{"cmd": 3, "id":' + i + '}');
+      }
       /*
       ws_feed.send('{ "cmd": 3, "id": ' + i + '}');
       */
@@ -112,7 +114,27 @@
     debug_ws_feed = new WebSocket('ws://plurry.cycorld.com:3000/ws/' + 'debug/<%=@product.product_id%>');
     debug_ws_feed.onopen    = function()  { show_debug_feed('websocket opened'); };
     debug_ws_feed.onclose   = function()  { show_debug_feed('websocket closed'); };
-    debug_ws_feed.onmessage = function(m) { show_debug_feed(Date() + ': ' +  m.data); };
+    debug_ws_feed.onmessage = function(m) {
+      show_debug_feed(Date() + ': ' +  m.data);
+      if(m.data.indexOf("rs") != -1) {
+        var schedule = JSON.parse(m.data);
+        if(schedule.errcode == 0) {
+          var status = schedule.timestamp == 0
+          scheduleArray.push({
+            id: schedule.nid,
+            status: status,
+            time: secondToStringTime(schedule.timestamp),
+            amount: schedule.amount
+          });
+          if(scheduleArray.length == 20) {
+            scheduleTable.bootstrapTable('append', timeSort(scheduleArray));
+            scheduleTable.bootstrapTable('hideLoading');
+          }
+        } else {
+          ws_feed.send('{ "cmd": 3, "id": ' + schedule.nid + '}')
+        }
+      }
+    };
 
     $("#debug_input_feed").keypress(function(e) {
       if (e.which == 13) {
