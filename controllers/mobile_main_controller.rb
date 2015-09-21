@@ -81,8 +81,8 @@ class MobileMainController < ApplicationController
         else 
           schedules[index]["status"] = false
         end
-        schedules[index]["time"] == params[:time]
-        schedules[index]["amount"] == params[:amount].to_i
+        schedules[index]["time"] = params[:time]
+        schedules[index]["amount"] = params[:amount].to_i
         break
       end
     end
