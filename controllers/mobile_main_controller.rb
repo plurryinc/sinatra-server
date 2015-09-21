@@ -73,7 +73,7 @@ class MobileMainController < ApplicationController
 
   post '/:product/schedule' do
     product = Product.where(product_id: params[:product]).take
-    return product.schedule.to_json
+    return { result: "success", what: "product schedule", data: product.schedule }.to_json
   end
 
   post '/:product/schedule/update' do
