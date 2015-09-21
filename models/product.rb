@@ -6,7 +6,7 @@ class Product < ActiveRecord::Base
   serialize :schedule, Array
 
   def schedule_create
-    if self.product_type == 1
+    if self.product_type == 1 && self.schedule.empty?
       default = []
       0.upto(19) do |i|
         default.push({
