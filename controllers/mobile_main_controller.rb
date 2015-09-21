@@ -71,7 +71,12 @@ class MobileMainController < ApplicationController
     return { result: "success", what: "product update" }.to_json
   end
 
-  post '/:product/schedule' do
+  get '/:product/schedule' do
+    product = Product.where(product_id: params[:product]).take
+    return product.schedule.to_json
+  end
+
+  post '/:product/schedule/update' do
     product = Product.where(product_id: params[:product]).take
     schedules = product.schedule
     schedules.each_with_index do |schedule, index|
@@ -89,4 +94,5 @@ class MobileMainController < ApplicationController
     product.update(schedule: schedules)
     return { result: "success", what: "schedule update" }.to_json
   end
+
 end
