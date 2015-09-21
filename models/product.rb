@@ -14,7 +14,7 @@ class Product < ActiveRecord::Base
           status: true,
           time: "empty",
           amount: 0
-        })
+        }.stringify_keys!)
       end
       self.update(schedule: default)
     end
