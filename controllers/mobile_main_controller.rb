@@ -76,8 +76,8 @@ class MobileMainController < ApplicationController
     schedules = product.schedule
     schedules.each do |schedule|
       schedule.stringify_keys!
-      if(schedule["nid"] == params[:nid])
-        if(params[:time] == 0)
+      if(schedule["id"] == params[:nid])
+        if(params[:time] == "empty")
           schedule["status"] = true
         else 
           schedule["status"] = false
