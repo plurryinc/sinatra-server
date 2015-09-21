@@ -74,16 +74,15 @@ class MobileMainController < ApplicationController
   post '/:product/schedule' do
     product = Product.where(product_id: params[:product]).take
     schedules = product.schedule
-    schedules.each do |schedule|
-      schedule.stringify_keys!
-      if(schedule["id"] == params[:nid])
+    schedules.each_with_index do |schedule, index|
+      if(schedules[index]["id"] == params[:nid].to_i)
         if(params[:time] == "empty")
-          schedule["status"] = true
+          schedules[index]["status"] = true
         else 
-          schedule["status"] = false
+          schedules[index]["status"] = false
         end
-        schedule["time"] == params[:time]
-        schedule["amount"] == params[:amount]
+        schedules[index]["time"] == params[:time]
+        schedules[index]["amount"] == params[:amount].to_i
         break
       end
     end
