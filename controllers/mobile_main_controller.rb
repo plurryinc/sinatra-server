@@ -70,4 +70,24 @@ class MobileMainController < ApplicationController
     group.m_update_product(params[:products]) unless params[:products].empty?
     return { result: "success", what: "product update" }.to_json
   end
+
+  post '/:product/schedule' do
+    product = Product.where(product_id: params[:product]).take
+    schedules = product.schedule
+    schedules.each do |schedule|
+      schedule.stringify_keys!
+      if(schedule["nid"] == params[:nid])
+        if(params[:time] == 0)
+          schedule["status"] = true
+        else 
+          schedule["status"] = false
+        end
+        schedule["time"] == params[:time]
+        schedule["amount"] == params[:amount]
+        break
+      end
+    end
+    product.update(schedule: schedules)
+    return { result: "success", what: "schedule update" }.to_json
+  end
 end
