@@ -7,7 +7,7 @@ class Log < ActiveRecord::Base
     msg_hash = JSON.parse msg
     begin
       #it's real server
-      if !msg_hash["rs"].nil?
+      if !msg_hash["rs"].nil? && msg_hash["errcode"] == 0
         if [104, 106, 107, 110].include? msg_hash["rs"]
           Log.create({
             product_id: product_id,
@@ -16,19 +16,25 @@ class Log < ActiveRecord::Base
             message_code: msg_hash["rs"],
             create_time: Time.now.to_i
           })
+          if(msg_hash["rs"] == 104)
+            product = product.find product_id
+            schedules = product.schedule
+            schedules.each_with_index do |schedule, index|
+              if(schedules[index]["id"] == msg_hash["nid"])
+                if(params[:time] == 0)
+                  schedules[index]["time"] = "empty"
+                  schedules[index]["status"] = true
+                else 
+                  schedules[index]["time"] = secondToStringTime msg_hash["timestamp"]
+                  schedules[index]["status"] = false
+                end
+                schedules[index]["amount"] = msg_hash["amount"]
+                break
+              end
+            end
+            product.update(schedule: schedules)
+          end
         end
-=begin
-      #it's test
-      if !msg_hash["cmd"].nil?
-        unless [8, 9].include? msg_hash["cmd"]
-          Log.create({
-            product_id: product_id,
-            message: msg_hash,
-            message_type: "cmd",
-            message_code: msg_hash["cmd"]
-          })
-        end
-=end
       elsif !msg_hash["report"].nil?
         Log.create({
           product_id: product_id,

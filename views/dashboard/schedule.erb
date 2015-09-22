@@ -86,9 +86,6 @@
         for(var i = 0; i < 20;i++)
           ws_feed.send('{"cmd": 3, "id":' + i + '}');
       }
-      /*
-      ws_feed.send('{ "cmd": 3, "id": ' + i + '}');
-      */
     };
     ws_feed.onclose   = function()  { show_feed('websocket closed'); }
     ws_feed.onmessage = function(m) { show_feed(Date() + ': ' +  m.data); };
@@ -200,11 +197,6 @@
       });
       scheduleTable.bootstrapTable('uncheckAll');
     });
-    window.onbeforeunload = function() {
-      var scheduleData = scheduleTable.bootstrapTable('getData');
-      scheduleData = JSON.stringify(scheduleData);
-      $.post('/dashboard/'+ "<%= @product.product_id %>" + '/schedule', { schedule: scheduleData });
-    };
   });
 </script>
 <% end %>
