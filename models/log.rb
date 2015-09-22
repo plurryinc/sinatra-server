@@ -17,15 +17,15 @@ class Log < ActiveRecord::Base
             create_time: Time.now.to_i
           })
           if(msg_hash["rs"] == 104)
-            product = product.find product_id
+            product = Product.find product_id
             schedules = product.schedule
             schedules.each_with_index do |schedule, index|
               if(schedules[index]["id"] == msg_hash["nid"])
-                if(params[:time] == 0)
+                if(msg_hash["timestamp"] == 0)
                   schedules[index]["time"] = "empty"
                   schedules[index]["status"] = true
                 else 
-                  schedules[index]["time"] = secondToStringTime msg_hash["timestamp"]
+                  schedules[index]["time"] = Time.at(msg_hash["timestamp"]).utc.strftime("%I:%M %P").upcase
                   schedules[index]["status"] = false
                 end
                 schedules[index]["amount"] = msg_hash["amount"]
@@ -91,7 +91,7 @@ class Log < ActiveRecord::Base
   end
 
   def secondToStringTime sec
-    Time.at(sec).utc.strftime("%I:%M %P")
+    Time.at(sec).utc.strftime("%I:%M %P").upcase
   end
 
   def created_time
