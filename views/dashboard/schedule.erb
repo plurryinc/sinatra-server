@@ -171,21 +171,24 @@
       var time = $timepicker.data('timepicker').getTime();
       var amount = $("#schedule-feed-slider").slider("value");
       var All = scheduleTable.bootstrapTable('getData');
-      for(var i = 0; i < All.length; i++) 
-        if(All[i].time == time) {
-          All[i].status = true;
-          All[i].time = "empty";
-          All[i].amount = 0;
-          ws_feed.send('{ "cmd": 4, "id": ' + All[i].id + ', "timestamp": 0, "amount": 0 }');
-        }
+      var target = null;
       for(var i = 0; i < All.length; i++) {
-        if(All[i].status == true) {
-          secTime = stringToSecondTime(time)
-          if(secTime % 60 == 0)
-            ws_feed.send('{ "cmd": 4, "id": ' + All[i].id + ', "timestamp": ' + stringToSecondTime(time) + ', "amount": ' + amount + '}');
+        if(All[i].time == time) {
+          target = All[i];
           break;
         }
       }
+      if(target == null) {
+        for(var i = 0; i < All.length; i++) {
+          if(All[i].status == true) {
+            target = All[i];
+            break;
+          }
+        }
+      }
+      secTime = stringToSecondTime(time)
+      if(secTime % 60 == 0)
+        ws_feed.send('{ "cmd": 4, "id": ' + target.id + ', "timestamp": ' + stringToSecondTime(time) + ', "amount": ' + amount + '}');
     });
 
     $('.schedule-delete-button').click(function() {
