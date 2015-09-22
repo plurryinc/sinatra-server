@@ -5,50 +5,53 @@ class Log < ActiveRecord::Base
 
   def self.create_log(product_id, msg)
     msg_hash = JSON.parse msg
-    begin
-      #it's real server
-      if !msg_hash["rs"].nil? && msg_hash["errcode"] == 0
-        if [104, 106, 107, 110].include? msg_hash["rs"]
-          Log.create({
-            product_id: product_id,
-            message: msg_hash,
-            message_type: "rs",
-            message_code: msg_hash["rs"],
-            create_time: Time.now.to_i
-          })
-          if(msg_hash["rs"] == 104)
-            product = Product.find product_id
-            schedules = product.schedule
-            schedules.each_with_index do |schedule, index|
-              if(schedules[index]["id"] == msg_hash["nid"])
-                if(msg_hash["timestamp"] == 0)
-                  schedules[index]["time"] = "empty"
-                  schedules[index]["status"] = true
-                else 
-                  schedules[index]["time"] = Time.at(msg_hash["timestamp"]).utc.strftime("%I:%M %P").upcase
-                  schedules[index]["status"] = false
-                end
-                schedules[index]["amount"] = msg_hash["amount"]
-                break
-              end
-            end
-            product.update(schedule: schedules)
+    #it's real server
+    if !msg_hash["rs"].nil? && msg_hash["errcode"] == 0
+      if [104, 106, 107, 110].include? msg_hash["rs"]
+        begin
+          if(msg_hash["timestamp"] != 0)
+            Log.create({
+              product_id: product_id,
+              message: msg_hash,
+              message_type: "rs",
+              message_code: msg_hash["rs"],
+              create_time: Time.now.to_i
+            })
           end
+        rescue Exception => e
+          puts "save Log fail because... => #{e.message}"
         end
-      elsif !msg_hash["report"].nil?
-        Log.create({
-          product_id: product_id,
-          message: msg_hash,
-          message_type: "report",
-          message_code: msg_hash["report"],
-          create_time: Time.now.to_i
-        })
-      else
-        puts "not save Log...because it's not Hash and...is_valid_json? method not running"
+        if(msg_hash["rs"] == 104)
+          product = Product.find product_id
+          schedules = product.schedule
+          schedules.each_with_index do |schedule, index|
+            if(schedules[index]["id"] == msg_hash["nid"])
+              if(msg_hash["timestamp"] == 0)
+                schedules[index]["time"] = "empty"
+                schedules[index]["status"] = true
+              else 
+                schedules[index]["time"] = Time.at(msg_hash["timestamp"]).utc.strftime("%I:%M %P").upcase
+                schedules[index]["status"] = false
+              end
+              schedules[index]["amount"] = msg_hash["amount"]
+              break
+            end
+          end
+          product.update(schedule: schedules)
+        end
       end
-    rescue Exception => e
-      puts "save Log fail because... => #{e.message}"
+    elsif !msg_hash["report"].nil?
+      Log.create({
+        product_id: product_id,
+        message: msg_hash,
+        message_type: "report",
+        message_code: msg_hash["report"],
+        create_time: Time.now.to_i
+      })
+    else
+      puts "not save Log...because it's not Hash and...is_valid_json? method not running"
     end
+
   end
 
   def dashboard
