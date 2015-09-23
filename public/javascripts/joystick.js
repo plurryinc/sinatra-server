@@ -97,11 +97,11 @@ var makeJoystick = function(selector, sqhw) {
         plusX = parseInt(Math.abs((maxVelocity - defaultVelocity) * (x / msq).toFixed(2))) * -1;
         plusY = parseInt((maxVelocity - defaultVelocity) * (y / msq).toFixed(2));
         if( x > 0 ) {
-          vec.left = defaultVelocity + plusY + plusX
-          vec.right = defaultVelocity + plusY
-        } else {
           vec.left = defaultVelocity + plusY
           vec.right = defaultVelocity + plusY + plusX
+        } else {
+          vec.left = defaultVelocity + plusY + plusX
+          vec.right = defaultVelocity + plusY
         }
       } else if( theta >= 150 && theta < 210 ) {
         if(Math.abs(x) > (msq / 2)) {
@@ -115,11 +115,11 @@ var makeJoystick = function(selector, sqhw) {
         plusX = parseInt(Math.abs((maxVelocity - defaultVelocity) * (x / msq).toFixed(2)));
         plusY = parseInt((maxVelocity - defaultVelocity) * (y / msq).toFixed(2));
         if( x > 0 ) {
-          vec.left = (defaultVelocity * -1) + plusY + plusX
-          vec.right = (defaultVelocity * -1) + plusY
-        } else {
           vec.left = (defaultVelocity * -1) + plusY
           vec.right = (defaultVelocity * -1) + plusY + plusX
+        } else {
+          vec.left = (defaultVelocity * -1) + plusY + plusX
+          vec.right = (defaultVelocity * -1) + plusY
         }
       } else {
         vec.left = 0;
