@@ -31,14 +31,15 @@
 
 
     <% @groups.each do |g| %>
-      <% g.products.each do |p| %>
-        <div class="row">
-          <div class="col-lg-12">
-            <h1 class="page-header">
-              Dashboard <small><%= p.product_id %></small>
-            </h1>
-          </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <h1 class="page-header">
+            Dashboard <small><%= g.name %></small>
+          </h1>
         </div>
+      </div>
+      <% g.products.each do |p| %>
+        <h3><%= p.product_id %></h3>
         <div class="row product">
             <div class="col-lg-6">
                 <div class="logs panel panel-default">
