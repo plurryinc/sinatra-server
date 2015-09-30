@@ -31,11 +31,11 @@
 
 
     <% @groups.each do |g| %>
-      <% g.products.where(product_type: 1).each do |p| %>
+      <% g.products.each do |p| %>
         <div class="row">
           <div class="col-lg-12">
             <h1 class="page-header">
-              Dashboard <small>Statistics Overview</small>
+              Dashboard <small><%= p.product_id %></small>
             </h1>
           </div>
         </div>
@@ -59,6 +59,7 @@
                     </div>
                 </div>
             </div>
+            <% if p.product_type == 1 %>
             <div class="col-lg-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -88,6 +89,7 @@
                     </div>
                 </div>
             </div>
+            <% end %>
         </div>
       <% end %>
     <% end %>

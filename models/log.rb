@@ -55,6 +55,13 @@ class Log < ActiveRecord::Base
   end
 
   def dashboard
+    product_type = self.product.product_type
+    type = nil
+    if product_type == 1
+      type = "밥통"
+    elsif product_type == 2
+      type = "구돕부"
+    end
     if message_type == "rs"
       case message_code
       when 104
@@ -72,9 +79,9 @@ class Log < ActiveRecord::Base
         end
       when 110
         if message["amount"] == 0
-          "배터리가 거의 없습니다."
+          "#{type} 부분의 배터리가 거의 없습니다."
         else
-          "배터리가 #{message["amount"] + 1} / 3 만큼 남았습니다."
+          "#{type} 부분의 배터리가 #{message["amount"] + 1} / 3 만큼 남았습니다."
         end
       else
       end
@@ -84,9 +91,9 @@ class Log < ActiveRecord::Base
         "스케쥴에 따라서 밥을 주었습니다."
       when 202
         if message["amount"] == 0
-          "배터리가 거의 없습니다."
+          "#{type} 부분의 배터리가 거의 없습니다."
         else
-          "배터리가 #{message["amount"] + 1} / 3 만큼 남았습니다."
+          "#{type} 부분의 배터리가 #{message["amount"] + 1} / 3 만큼 남았습니다."
         end
       else
       end
