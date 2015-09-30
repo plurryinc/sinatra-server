@@ -60,7 +60,7 @@ class Log < ActiveRecord::Base
     if product_type == 1
       type = "밥통"
     elsif product_type == 2
-      type = "구돕부"
+      type = "구동부"
     end
     if message_type == "rs"
       case message_code
