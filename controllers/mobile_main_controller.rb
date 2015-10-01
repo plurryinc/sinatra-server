@@ -33,6 +33,7 @@ class MobileMainController < ApplicationController
         product_id: p.product_id,
         product_secret_token: p.secret_token,
         product_type: p.product_type,
+        owr_session_id: p.owr_session_id,
         schedule: p.schedule
       })
     end
