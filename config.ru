@@ -15,5 +15,6 @@ map('/ws') { run WebsocketController }
 map('/dashboard') { run DashboardController }
 map('/mobile/users') { run MobileAuthenticationController }
 map('/mobile') { run MobileMainController }
+map('/owr') { run OwrController }
 map('/users') { run AuthenticationController }
 map('/') { run HomeController }

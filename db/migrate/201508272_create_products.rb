@@ -16,6 +16,7 @@ class CreateProducts < ActiveRecord::Migration
       t.string  :code,          null: false
       t.string  :product_id,    null: false
       t.string  :secret_token,  null: false
+      t.string  :owr_session_id
       t.integer :product_type,  null: false
       t.text    :schedule, default: default
 
@@ -23,6 +24,7 @@ class CreateProducts < ActiveRecord::Migration
     end
 
     add_index :products, :code, :unique => true
+    add_index :products, :owr_session_id, :unique => true
     add_index :products, :product_id, :unique => true
   end
 end
