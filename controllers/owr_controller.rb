@@ -10,6 +10,6 @@ class OwrController < ApplicationController
     secret_token = hash[14, 8]
     owr_session_id = hash[30,10]
     product = Product.create(owr_session_id: owr_session_id, code: code, product_id: product_id, product_type: 3, secret_token: secret_token)
-    return { result: "success", what: "generate code", data: { owr_session_id: owr_session_id, code: code } }.to_json
+    return { result: "success", what: "generate code", data: { product_id: product_id, owr_session_id: owr_session_id, code: code } }.to_json
   end
 end
