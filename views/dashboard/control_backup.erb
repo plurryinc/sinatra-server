@@ -1,0 +1,129 @@
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <!-- row -->
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">
+        Controller <small>Control Your Plurry</small>
+      </h1>
+      <div class="controllers">
+        <div class="video col-lg-6">
+          <% #unless @type3.nil? %>
+          <% #end %>
+        </div>
+        <div class="control col-lg-6">
+          <% unless @type2.nil? %>
+            <div class="joystick-limit">
+              <div id="joystick" class="joystick" data-code="<%= @type2.product_id %>" ></div>
+            </div>
+          <% end %>
+          <% unless @type1.nil? %>
+            <p>
+              <label for="amount">밥 줄 정도 :</label>
+              <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+            </p>
+            <div id="feed-slider"></div>
+            <div class="feed-button">밥주기</div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <h1 class="page-header">
+      </h1>
+
+      <div id="dialler" data-active="false">
+      </div>
+    </div>
+    <div class="col-lg-12">
+      <% @group.products.each_with_index do |p, i| %>
+        <div class="col-lg-6">
+          <h3 class="page-header">
+            CMD(<%= i %>) <small><%=p.product_id%></small>
+          </h3>
+          <input type="text" id="input_<%=p.product_type%>" placeholder="send a test command">
+          <div id="msgs_<%=p.product_type%>" style="height:200px;overflow:scroll;"></div>
+        </div>
+        <div class="col-lg-6">
+          <h3 class="page-header">
+            Debugger(<%= i %>) <small><%=p.product_id%></small>
+          </h3>
+          <input type="text" id="debug_input_<%=p.product_type%>" placeholder="send a test command">
+          <div id="debug_msgs_<%=p.product_type%>" style="height:200px;overflow:scroll;"></div>
+        </div>
+        <script type="text/javascript">
+          $(document).ready(function(){
+            //cmd javascript
+            function show_<%=p.product_type%>(msg) {
+              $("#msgs_<%=p.product_type%>").prepend(msg+'<br>');
+            }
+            //ws_<%=p.product_type%> = new WebSocket('ws://' + window.location.host + '/ws/<%=p.product_id%>');
+            ws_<%=p.product_type%> = new WebSocket('ws://plurry.cycorld.com:3000/ws/' + '<%=p.product_id%>');
+            ws_<%=p.product_type%>.onopen    = function()  { show_<%=p.product_type%>('websocket opened'); };
+            ws_<%=p.product_type%>.onclose   = function()  { show_<%=p.product_type%>('websocket closed'); }
+            ws_<%=p.product_type%>.onmessage = function(m) { show_<%=p.product_type%>(Date() + ': ' +  m.data); };
+            $("#input_<%=p.product_type%>").keypress(function(e) {
+              if (e.which == 13) {
+                ws_<%=p.product_type%>.send($(this).val());
+                $(this).val("");
+              }
+            });
+
+            //debug javascript
+            function show_debug_<%=p.product_type%>(msg) {
+              $("#debug_msgs_<%=p.product_type%>").prepend(msg+'<br>');
+            }
+            //debug_ws_<%=p.product_type%> = new WebSocket('ws://' + window.location.host + '/ws/debug/<%=p.product_id%>');
+            debug_ws_<%=p.product_type%> = new WebSocket('ws://plurry.cycorld.com:3000/ws/' + 'debug/<%=p.product_id%>');
+            debug_ws_<%=p.product_type%>.onopen    = function()  { show_debug_<%=p.product_type%>('websocket opened'); };
+            debug_ws_<%=p.product_type%>.onclose   = function()  { show_debug_<%=p.product_type%>('websocket closed'); }
+            debug_ws_<%=p.product_type%>.onmessage = function(m) { show_debug_<%=p.product_type%>(Date() + ': ' +  m.data); };
+            $("#debug_input_<%=p.product_type%>").keypress(function(e) {
+              if (e.which == 13) {
+                debug_ws_<%=p.product_type%>.send($(this).val());
+                $(this).val("");
+              }
+            });
+          });
+        </script>
+      <% end %>
+    </div>
+  </div>
+  <!-- /.row -->
+  <!-- /.container-fluid -->
+
+  <script>
+    $(document).ready(function() {
+      var $inputDelay = $('#joystick-delay');
+      var joystick = new makeJoystick('#joystick', 180)
+      //인풋 이벤트(엔터 시에 발동)
+      $inputDelay.change(function() {
+        var value = $(this).val();
+        var max = parseInt($(this).attr('max'));
+        var min = parseInt($(this).attr('min'));
+        if( value > max )
+          value = max;
+        else if( value < min )
+          value = min;
+        $('.joystick-delay-message').text(parseFloat((value / 1000)).toFixed(3) + " 초 딜레이로 변경 되었습니다.")
+        joystick.setWebSocketDelay(value);
+      });
+      //밥주기 슬라이더
+      $("#feed-slider").slider({
+        range: "max",
+        min: 1,
+        max: 9,
+        value: 1,
+        slide: function( event, ui ) {
+          $("#amount").val(ui.value + " (최소 1 ~ 최대 9)");
+        }
+      });
+      $("#amount").val($("#feed-slider").slider("value") + " (최소 1 ~ 최대 9)");
+      //밥주기 이벤트
+      $(".feed-button").click(function() {
+        ws_1.send('{"cmd" : 6, "amount" : ' + $("#feed-slider").slider("value") + '}');
+      });
+    });
+    //skylink
+  </script>
