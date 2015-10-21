@@ -34,7 +34,7 @@ class WebsocketController < ApplicationController
                             product = Product.where(product_id: hash).take
                             Log.create_log(product.id, msg)
                           end
-                          s.send msg
+                          s.send(msg)
                         end
                       end
                     end
@@ -73,7 +73,8 @@ class WebsocketController < ApplicationController
             begin
             settings.sockets.each do |s|
               if settings.rooms["debug_" + hash].include? (s.object_id)
-                s.send(msg)
+                  s.send("remote on") if msg.eql? "web-open"
+                  s.send(msg) unless msg.eql? "web-open"
               end
             end
             rescue Exception => e
