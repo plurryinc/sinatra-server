@@ -36,7 +36,7 @@ class WebsocketController < ApplicationController
                 end
                 unless settings.rooms["debug_" + hash].nil?
                   settings.sockets.each do |s|
-                    if settings.rooms["debug_" + hash].include (s.object_id)
+                    if settings.rooms["debug_" + hash].include? (s.object_id)
                       s.send msg
                     end
                   end
