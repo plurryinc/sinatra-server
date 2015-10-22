@@ -101,7 +101,8 @@ class WebsocketController < ApplicationController
             begin
               settings.sockets.each do |s|
                 if settings.rooms["debug_" + product].include? (s.object_id)
-                  s.send(msg)
+                  s.send("remote on") if msg.eql? "web-open"
+                  s.send(msg) if !msg.eql? "web-open"
                 end
               end
             rescue Exception => e
