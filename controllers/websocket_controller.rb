@@ -21,6 +21,29 @@ class WebsocketController < ApplicationController
         ws.onmessage do |msg|
           EM.next_tick do
             begin
+              if is_valid_cmd? msg
+                unless settings.rooms[hash].nil?
+                  settings.sockets.each do |s|
+                    if settings.rooms[hash].include? (s.object_id)
+                      s.send msg
+                    end
+                  end
+                end
+              else
+                if is_valid_json? msg
+                  product = Product.where(product_id: hash).take
+                  Log.create_log(product.id, msg)
+                end
+                unless settings.rooms["debug_" + hash].nil?
+                  settings.sockets.each do |s|
+                    if settings.rooms["debug_" + hash].include (s.object_id)
+                      s.send msg
+                    end
+                  end
+                end
+              end
+
+=begin
               settings.sockets.each do |s|
                 if settings.rooms[hash].include? (s.object_id)
                   s_index = settings.rooms[hash].index(s.object_id)
@@ -32,7 +55,6 @@ class WebsocketController < ApplicationController
                         if settings.rooms["debug_" + hash].include? (s.object_id)
                           s.send(msg)
                         end
-=begin
                         if s.object_id == settings.rooms["debug_" + hash][s_index]
                           if is_valid_json? msg
                             product = Product.where(product_id: hash).take
@@ -40,12 +62,12 @@ class WebsocketController < ApplicationController
                           end
                           s.send(msg)
                         end
-=end
                       end
                     end
                   end
                 end
               end
+=end
             rescue Exception => e
               puts "fail because...=> #{e.message}"
             end
