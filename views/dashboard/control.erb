@@ -181,8 +181,9 @@
             function show_debug_<%=p.product_type%>(msg) {
               $("#debug_msgs_<%=p.product_type%>").prepend(msg+'<br>');
             }
+            var hash = calcMD5(Date.now);
             //debug_ws_<%=p.product_type%> = new WebSocket('ws://' + window.location.host + '/ws/debug/<%=p.product_id%>');
-            debug_ws_<%=p.product_type%> = new WebSocket('ws://plurry.cycorld.com:3000/ws/' + 'debug/<%=p.product_id%>');
+            debug_ws_<%=p.product_type%> = new WebSocket('ws://plurry.cycorld.com:3000/ws/' + hash + '/<%=p.product_id%>');
             debug_ws_<%=p.product_type%>.onopen    = function()  { show_debug_<%=p.product_type%>('websocket opened'); };
             debug_ws_<%=p.product_type%>.onclose   = function()  { show_debug_<%=p.product_type%>('websocket closed'); }
             debug_ws_<%=p.product_type%>.onmessage = function(m) { show_debug_<%=p.product_type%>(Date() + ': ' +  m.data); };

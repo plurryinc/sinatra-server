@@ -60,7 +60,7 @@ class WebsocketController < ApplicationController
     end
   end
 
-  get '/:hash/:product' do |product|
+  get '/:hash/:product' do |hash, product|
     if !request.websocket?
       erb :ws
     else
