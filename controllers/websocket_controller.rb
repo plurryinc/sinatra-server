@@ -29,6 +29,10 @@ class WebsocketController < ApplicationController
                   else
                     unless settings.rooms["debug_" + hash].nil?
                       settings.sockets.each do |s|
+                        if settings.rooms["debug_" + hash].include? (s.object_id)
+                          s.send(msg)
+                        end
+=begin
                         if s.object_id == settings.rooms["debug_" + hash][s_index]
                           if is_valid_json? msg
                             product = Product.where(product_id: hash).take
@@ -36,6 +40,7 @@ class WebsocketController < ApplicationController
                           end
                           s.send(msg)
                         end
+=end
                       end
                     end
                   end
@@ -55,36 +60,37 @@ class WebsocketController < ApplicationController
     end
   end
 
-  get '/debug/:hash' do |hash|
+  get '/:hash/:product' do |product|
     if !request.websocket?
       erb :ws
     else
       request.websocket do |ws|
         ws.onopen do
-          ws.send("Debug! Channel : #{hash}")
+          ws.send("Debug! Channel : #{product}")
           settings.sockets << ws
-          settings.rooms["debug_" + hash] = Array.new if settings.rooms["debug_" + hash].class != Array
-          settings.rooms["debug_" + hash] << ws.object_id
+          settings.rooms["debug_" + product] = Array.new if settings.rooms["debug_" + product].class != Array
+          settings.rooms["debug_" + product] << ws.object_id
           ws.send("object_id : " + ws.object_id.to_s)
           session[:debug_ws_id] = ws.object_id
         end
+
         ws.onmessage do |msg|
           EM.next_tick do
             begin
-            settings.sockets.each do |s|
-              if settings.rooms["debug_" + hash].include? (s.object_id)
-                  s.send("remote on") if msg.eql? "web-open"
-                  s.send(msg) unless msg.eql? "web-open"
+              settings.sockets.each do |s|
+                if settings.rooms["debug_" + product].include? (s.object_id)
+                  s.send(msg)
+                end
               end
-            end
             rescue Exception => e
               puts "fail because...=> #{e.message}"
             end
           end
         end
+
         ws.onclose do
           warn("websocket closed")
-          settings.rooms["debug_" + hash].delete(ws.object_id)
+          settings.rooms["debug_" + product].delete(ws.object_id)
           settings.sockets.delete(ws)
         end
       end
