@@ -10,13 +10,13 @@ class Log < ActiveRecord::Base
       if [104, 106, 107, 110].include? msg_hash["rs"]
         begin
           if(msg_hash["timestamp"] != 0)
-            Log.create({
+            Log.create(
               product_id: product_id,
               message: msg_hash,
               message_type: "rs",
               message_code: msg_hash["rs"],
               create_time: Time.now.to_i
-            })
+            )
           end
         rescue Exception => e
           puts "save Log fail because... => #{e.message}"
@@ -41,13 +41,13 @@ class Log < ActiveRecord::Base
         end
       end
     elsif !msg_hash["report"].nil?
-      Log.create({
+      Log.create(
         product_id: product_id,
         message: msg_hash,
         message_type: "report",
         message_code: msg_hash["report"],
         create_time: Time.now.to_i
-      })
+      )
     else
       puts "not save Log...because it's not Hash and...is_valid_json? method not running"
     end

@@ -30,9 +30,16 @@ class WebsocketController < ApplicationController
                   end
                 end
               else
+                product = Product.where(product_id: hash).take
                 if is_valid_json? msg
-                  product = Product.where(product_id: hash).take
                   Log.create_log(product.id, msg)
+                end
+                if msg.eql? "healthCheck"
+                  Log.create(
+                    product_id: product.id,
+                    message_type: "phone health check",
+                    create_time: Time.now.to_i
+                  )
                 end
                 unless settings.rooms["debug_" + hash].nil?
                   settings.sockets.each do |s|
