@@ -4,7 +4,7 @@ lock '3.4.0'
 set :application, 'sinatra-server'
 set :repo_url, 'git@github.com:plurryinc/sinatra-server.git'
 
-set :rvm_type, :user
+set :rvm_type, :root
 set :rvm_ruby_version, '2.2.1'
 set :rvm_roles, [:app, :web]
 
