@@ -5,7 +5,7 @@ gem 'sinatra-websocket'
 gem "sinatra-activerecord"
 gem "sinatra-flash"
 gem "sqlite3"
-gem "mysql2"
+gem 'mysql2', '~> 0.3.19'
 gem "rake"
 gem "bcrypt"
 gem "sass"
