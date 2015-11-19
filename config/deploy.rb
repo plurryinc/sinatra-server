@@ -35,10 +35,10 @@ set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'db/prod
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
 
 # Default value for default_env is {}
-set :default_env, { PATH: "/home/ec2-user/.rvm/gems/ruby-2.2.1/bin:/home/ec2-user/.rvm/rubies/ruby-2.2.1/bin:$PATH",
-                    GEM_PATH: "/home/ec2-user/.rvm/gems/ruby-2.2.1",
-                    GEM_HOME: "/home/ec2-user/.rvm/gems/ruby-2.2.1",
-                    BUNDLE_PATH: "/home/ec2-user/.rvm/gems/ruby-2.2.1"}
+set :default_env, { PATH: "/usr/local/rvm/gems/ruby-2.2.1/bin:/usr/local/rvm/rubies/ruby-2.2.1/bin:$PATH",
+                    GEM_PATH: "/usr/local/rvm/gems/ruby-2.2.1",
+                    GEM_HOME: "/usr/local/rvm/gems/ruby-2.2.1",
+                    BUNDLE_PATH: "/usr/local/rvm/gems/ruby-2.2.1"}
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
