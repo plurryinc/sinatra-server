@@ -37,6 +37,7 @@ GEM
     i18n (0.7.0)
     json (1.8.3)
     minitest (5.8.0)
+    mysql2 (0.4.1)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
@@ -80,6 +81,7 @@ DEPENDENCIES
   capistrano (~> 3.4.0)
   capistrano-bundler
   capistrano-rvm
+  mysql2
   rake
   sass
   sinatra
@@ -88,3 +90,6 @@ DEPENDENCIES
   sinatra-websocket
   sqlite3
   thin
+
+BUNDLED WITH
+   1.10.6
