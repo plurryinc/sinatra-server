@@ -21,7 +21,6 @@ class WebsocketController < ApplicationController
         ws.onmessage do |msg|
           EM.next_tick do
             begin
-=begin
               if is_valid_cmd? msg
                 unless settings.rooms[hash].nil?
                   settings.sockets.each do |s|
@@ -50,7 +49,7 @@ class WebsocketController < ApplicationController
                   end
                 end
               end
-=end
+=begin
               settings.sockets.each do |s|
                 if settings.rooms[hash].include? (s.object_id)
                   s_index = settings.rooms[hash].index(s.object_id)
@@ -74,6 +73,7 @@ class WebsocketController < ApplicationController
                   end
                 end
               end
+=end
             rescue Exception => e
               puts "fail because...=> #{e.message}"
             end
