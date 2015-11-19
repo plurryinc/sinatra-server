@@ -2,15 +2,6 @@ require 'sinatra/activerecord'
 
 class CreateProducts < ActiveRecord::Migration
   def change
-    default = []
-    0.upto(19) do |i|
-      default.push({
-        id: i,
-        status: true,
-        time: "empty",
-        amount: 0
-      }.stringify_keys!)
-    end
     create_table :products do |t|
       t.integer :group_id
       t.string  :code,          null: false
@@ -18,7 +9,7 @@ class CreateProducts < ActiveRecord::Migration
       t.string  :secret_token,  null: false
       t.string  :owr_session_id
       t.integer :product_type,  null: false
-      t.text    :schedule, default: default
+      t.text    :schedule
 
       t.timestamps null: false
     end
